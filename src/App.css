@@ -1,0 +1,14 @@
+:root {
+  --color-negro: rgba(28, 28, 28, 1);
+  --color-blanco: rgba(255, 255, 255, 1);
+  --color-gris: rgba(238, 238, 238, 1);
+  --color-gris-oscuro: rgba(121, 121, 121, 1);
+}
+
+body {
+  font-family: "Archivo", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 100;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}

@@ -1,0 +1,254 @@
+nav{
+    width: 100%;
+    height: 4.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-negro);
+}
+.nav-cont-columnas{
+    width: 90%;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-col1 {
+    width: 15%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.nav-logo {
+    height: 4.5rem;
+}
+
+.nav-col2 {
+    width: 85%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.nav-cont-sup {
+    width: 90%;
+    height: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+.lista-sup {
+    width: 90%;
+    height: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin: 0;
+}
+.li-nav-sup-direcc,
+.li-nav-sup-tel,
+.li-nav-sup-email,
+.li-nav-sup-insta {
+    width: auto;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    margin: 0;
+    text-decoration: none;
+    margin-right: 10px;
+}
+/* icono nav sup */
+.icono-nav-sup {
+    color: var(--color-blanco);
+}
+.texto-barra-sup{
+    margin: 0 5px 0 3px;
+    color: var(--color-blanco);
+}
+.nav-cont-inf,
+.ul-nav-inf {
+    width: 90%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.ul-nav-inf{
+    justify-content: space-around;
+    margin: 0;
+}
+/* texto nav inf */
+.ul-nav-inf > li {
+    color: var(--color-blanco);
+    list-style: none;
+    margin-right: 1.5rem;
+    font-size: 25px;
+    font-weight: 100;
+}
+/* quito line y cambio color etiqtas a y Link */
+a, Link{
+    color: var(--primary-color);
+    text-decoration: none;
+}
+/* estilos menú ADMIN */
+.navbar-item-admin {
+    position: relative;
+    font-size:x-large;
+    font-weight: 600;
+    margin-left: 30px;
+    color: var(--color-blanco);
+    cursor: pointer;
+}
+.navbar-item-admin:hover {
+    color: #ddd;
+}
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--color-negro);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    width: 130px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+.dropdown-item {
+    padding: 0.5rem;
+    color: var(--color-blanco);
+    cursor: pointer;
+    font-size: large;
+}
+.dropdown-item:hover {
+    background-color: #555;
+}
+.link-menu {
+    text-decoration: none;
+}
+/* menú hamburg */
+.menu-icon span {
+    width: 100%;
+    height: 3px;
+    background-color: var(--color-blanco);
+    transition: all 0.3s ease;
+}
+.menu-icon.open span:nth-child(2) {
+    opacity: 0;
+}
+.menu-icon.open span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+.menu-icon.open span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+.menu-desplegable {
+    width: 100px;
+    position: absolute;
+    top: 50px;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--color-negro);
+    /* padding: 5px; */ /* esta prop me ac aparecer el punto nugro */
+    overflow: hidden;
+    transition: all 0.3s ease;
+    z-index: 3;
+}
+.ul-lista-pChica {
+    list-style-type: none;
+    padding: 0;
+}
+.link-navbar{
+    color: var(--color-blanco);
+    text-decoration: none;
+}
+.menu li:hover {
+    background: var(--color-negro);
+}
+.items-pChica{
+    margin: 10px 0 10px 0;
+}
+
+/* responsive */
+@media screen and (max-width: 1260px) {
+    .menu-icon {
+        display: none;
+    }
+    /* cont logo */
+    .cont-logo{
+        width: 25%;
+    }
+    .logo-nav{
+        height: 3rem;
+    }
+    .texto-barra-sup{
+        font-size: 15px;
+    }
+    .cont-nav-inf{ /* usando flexbox */
+        display: flex;
+        flex-wrap: wrap;
+    }
+    /* texto nav inf */
+    .ul-nav-inf > li {
+        font-size: 20px;
+    }
+    
+}
+@media screen and (max-width: 971px) {
+    .menu-icon {
+        display: none;
+    }
+    /* cont logo */
+    .cont-logo{
+        width: 28%;
+    }
+    .nav-col2 {
+        width: 90%;
+    }
+    .texto-barra-sup{
+        font-size: 13px;        
+    }
+    /* texto nav inf */
+    .ul-nav-inf > li {
+        font-size: 17px;
+    }
+    
+}
+@media screen and (max-width: 840px) {
+    nav {
+        height: 3.5rem;
+    }
+    .nav-cont-columnas{
+        justify-content: space-between;
+    }
+    .nav-col1 {
+        width: 25%;
+    }
+    .nav-logo {
+        height: 3.5rem;
+    }
+    .nav-col2{
+        display: none;
+    }
+    /* menu P.chica lo debo declarar acá, no arriba*/
+    .nav-col3 {
+        width: 15%;
+        height: 100%;
+        display: flex;
+        justify-content: center;    
+        align-items: center;
+    }
+    .menu-icon {
+        width: 30px;
+        height: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
+    }
+}

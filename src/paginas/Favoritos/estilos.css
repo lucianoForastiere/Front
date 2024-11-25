@@ -1,0 +1,9 @@
+.cont-page-favoritos{
+    width: 100%;
+    min-height: 90vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: var(--color-gris);
+}
