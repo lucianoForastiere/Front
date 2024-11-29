@@ -10,7 +10,10 @@ import NosotrosPage from './paginas/Nosotros';
 import Contactanos from './paginas/Contactanos';
 import DetalleProp from './paginas/DetallePropiedad';
 import FavoritosPage from './paginas/Favoritos';
+import CreaPropiedad from './paginas/CreaPropiedad';
+import ListaPropsAdminPage from './paginas/ListaProspAdminPage';
 import './App.css';
+
 
 function App() {
   return (
@@ -28,6 +31,8 @@ function App() {
           <Route path='/nosotros' element={<NosotrosPage/>} />
           <Route path='/detalle/:id' element={<DetalleProp/>} />
           <Route path='/favoritos' element={<FavoritosPage/>} />
+          <Route path='/creaPropiedad' element={<CreaPropiedad/>} />
+          <Route path='/listaPropsAdmin' element={<ListaPropsAdminPage/>} />
         </Routes>
 
         <Footbar />
