@@ -6,7 +6,7 @@ import {
 import { actual } from "../../urls";
 
 //---LOGIN--------------------------------------------------------
-export function login(data){
+export function login(data){ 
     return async function (dispatch) {
         const resp = await axios.post(`${actual}/auth/login`, data); 
         //asigno data del user al localStorage
@@ -19,7 +19,43 @@ export function resetLogin(){
         dispatch({type: RESET_LOGIN, payload: null})
     }
 }
+//--usuario------------------------------------------------------
+//crea usuario
+export const creaUsuario = (data) => {
+    return async function() {
+        await axios.post(`${actual}/usuarios/crea`, data);
+    }
+};
 
+//trae usuarios
+export const getUsuarios = () => {
+    return async function(dispatch) {
+        const resp = await axios.get(`${actual}/usuarios`);
+        dispatch({type: 'GET_USUARIOS', payload: resp.data});
+    }
+};
+
+//trae usuario por ID
+export const getUsuario = (_id) => {
+    return async function(dispatch) { 
+        const resp = await axios.get(`${actual}/usuarios/${_id}`);
+        dispatch({type: 'GET_USUARIO', payload: resp.data});
+    }
+};
+
+//edita usuario
+export const editaUsuario = ({_id, data}) => {
+    return async function() { 
+        await axios.put(`${actual}/usuarios/edita/${_id}`, data);
+    }
+};
+
+//elimina usuario
+export const eliminaUsuario = (email) => {
+    return async function() {
+        await axios.delete(`${actual}/usuarios/elimina/`, email);
+    }
+};
 //---PROPIEDADES----------------------------------------------------
 //trae props
 export const getProps = (limit, offset, operacion, tipo, precioMin, precioMax) => {

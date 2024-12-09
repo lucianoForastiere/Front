@@ -1,10 +1,11 @@
 import { 
     LOGIN, RESET_LOGIN, GET_PROPS, IS_OPEN_MODAL_PICTURE, LOADING,  RESET_PROPERTY,
-    GET_PROPIEDAD,   
+    GET_PROPIEDAD,GET_USUARIOS, GET_USUARIO,   
 } from "../actions/actionType";
 
 const initialState = {
-    user: {},
+    user: null,
+    usuarios: [],
     propiedades: [],
     totPropiedades: 0,
     propiedad: {},
@@ -13,13 +14,22 @@ const initialState = {
 
 export default function rootReducer (state = initialState, action) {
     switch(action.type){
-        case LOGIN:
+        case LOGIN: console.log("action.payload:", action.payload);
         return{
             ...state,
             user: action.payload,
-            error: null,
         }
         case RESET_LOGIN: 
+        return{
+            ...state,
+            user: action.payload
+        }
+        case GET_USUARIOS:
+            return {
+                ...state,
+                usuarios: action.payload
+        }
+        case GET_USUARIO:
         return{
             ...state,
             user: action.payload
