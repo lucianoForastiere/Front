@@ -28,8 +28,28 @@ function TablaProspAdmin({propiedades}) {
                             <tr key={propiedad._id}>
                                 <td><img src={propiedad.imagenes[0]} alt={propiedad.direccion} className='foto-tabla-prop'/></td>
                                 <td>{propiedad.ubicacion.direccionReal}</td>
-                                <td>{propiedad.operacion[0].tipoOperacion}</td>
-                                <td>{propiedad.operacion[0].precio}</td>
+                                <td>
+                                    {
+                                        propiedad.alquiler?.precio === null && "Venta" 
+                                    }
+                                    {
+                                        propiedad.venta?.precio === null && "Alquiler"
+                                    }
+                                    {
+                                        propiedad.venta?.precio !== null && propiedad.alquiler?.precio !== null && "Venta / Alquiler"
+                                    }
+                                </td>
+                                <td>
+                                    {
+                                        propiedad.alquiler?.precio === null && `$ ${propiedad.venta?.precio}` 
+                                    }
+                                    {
+                                        propiedad.venta?.precio === null && `$ ${propiedad.alquiler?.precio}`
+                                    }
+                                    {
+                                        propiedad.venta?.precio !== null && propiedad.alquiler?.precio !== null && `$ ${propiedad.venta?.precio} / $ ${propiedad.alquiler?.precio}` 
+                                    }
+                                </td>
                                 <td>{propiedad.dormitorios}</td>
                                 <td>{propiedad.baños}</td>
                                 <td>
