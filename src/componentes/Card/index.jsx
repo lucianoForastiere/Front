@@ -13,8 +13,10 @@ import './styles.css'
 function Card({ 
     id, 
     tituloPublicacion,
-    ubicacion,
     operacion,
+    moneda,
+    precio,
+    ubicacion,
     imagenes,
     cantCocheras,
     ambientes, 
@@ -34,7 +36,17 @@ function Card({
         <div className='contCard'>
             {/* titulo */}
             <div className='card-title'>
-                <h2 className='titulo-card'>{operacion[0].tipoOperacion}</h2>
+                <h2 className='titulo-card'>
+                    {
+                        operacion === "Venta" && "Venta"
+                    }
+                    {
+                        operacion === "Alquiler" && "Alquiler"
+                    }
+                    {
+                        operacion === "Venta y Alquiler" && "Venta / Alquiler"
+                    }
+                </h2>
             </div>
 
             {/* img + animacion + abre detalle */}
@@ -55,7 +67,7 @@ function Card({
                 </div>
             </NavLink>
 
-            {/* Titulo - direcc -  */}
+            {/* Titulo - direcc -  precio - fav*/}
             <div className='card-info1'>
                 <div className='cont-titulo-publicacion'>
                     <span className='tituloPublicacion'>{tituloPublicacion}</span>
@@ -69,9 +81,7 @@ function Card({
 
                 <div className='cont-precio-fav'>
                     <div className='cont-precio'>
-                        <p className='precio'>
-                            {operacion[0].moneda} {formatMoney(operacion[0].precio)}
-                        </p>
+                        <p className='precio'>{moneda} {formatMoney(precio)}</p>
                     </div>
                     <div className='cont-fav'>
                         <Favorito
@@ -79,6 +89,8 @@ function Card({
                             tituloPublicacion={tituloPublicacion}
                             ubicacion={ubicacion}
                             operacion={operacion}
+                            moneda={moneda}
+                            precio={precio}
                             imagenes={imagenes}
                             cantCocheras={cantCocheras}
                             ambientes={ambientes}

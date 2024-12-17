@@ -2,7 +2,24 @@ import React, { useState, useEffect } from 'react';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import './estilos.css';
 
-const Favorito = ({ id,direccionF, cantCocheras, operacion, imagenes, tituloPublicacion, ambientes, dormitorios, unidadMedida, tipo }) => {
+const Favorito = ({ 
+    id,
+    tituloPublicacion,
+    ubicacion,
+    operacion,
+    moneda,
+    precio,
+    imagenes,
+    cantCocheras,
+    ambientes,
+    dormitorios,
+    tipoPropiedad,
+    supTotal,
+    supDescubierta,
+    supCubierta,
+    supSemiCub,
+    baños, 
+}) => {
 
     const [isFavorite, setIsFavorite] = useState(false); 
 
@@ -14,19 +31,26 @@ const Favorito = ({ id,direccionF, cantCocheras, operacion, imagenes, tituloPubl
             // eslint-disable-next-line no-self-compare
             const updatedFavorites = favorites.filter(p => p.id !== id);
             localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+            window.location.reload(); //recargo la pagina para que se actualice el estado de favoritos
         } else { //agrego
             //creo objeto propiedad
             const propiedad = {
                 id,
-                direccionF,
-                cantCocheras,
-                operacion,
-                imagenes,
                 tituloPublicacion,
+                ubicacion,
+                operacion,
+                moneda,
+                precio,
+                imagenes,
+                cantCocheras,
                 ambientes,
                 dormitorios,
-                unidadMedida,
-                tipo,
+                tipoPropiedad,
+                supTotal,
+                supDescubierta,
+                supCubierta,
+                supSemiCub,
+                baños,
             }
             const updatedFavorites = [...favorites, propiedad];
             localStorage.setItem('favorites', JSON.stringify(updatedFavorites));

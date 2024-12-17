@@ -17,11 +17,7 @@ import './estilos.css';
 function DetalleProp(){
 
     const { id } = useParams();  //let id = props.match.params.id 
-    const propiedad = useSelector(state => state.propiedad);
-    //obt el tipo de moneda
-    const moneda =  propiedad?.operacion?.[0]?.moneda; 
-    //otengo el precio de la prop
-    const precio =  propiedad?.operacion?.[0]?.precio; 
+    const propiedad = useSelector(state => state.propiedad);    
     const navigate = useNavigate();
     const dispatch = useDispatch();    
     const contexto = useContext(InmobiliariaContext); 
@@ -136,15 +132,7 @@ function DetalleProp(){
                         <p className='titulo-detalle-prop'>Detalle Propiedad</p>
                         <div className='cont-p-col-1'>
                             <p className='p-col-1'>Tipo Operacio:</p>
-                            {
-                                propiedad.operacion?.map(o => {
-                                    return (
-                                        <div key={o.operacion_id}>
-                                            <p className='p-col-1'>{propiedad.operacion[0]?.tipoOperacion}</p>
-                                        </div>
-                                    )
-                                })
-                            }
+                            <p className='p-col-1'>{ propiedad.operacion }</p>
                         </div>
                         <div className='cont-p-col-1'>
                             <p className='p-col-1'>Tipo de Prop:</p>
@@ -152,7 +140,7 @@ function DetalleProp(){
                         </div>
                         <div className='cont-p-col-1'>
                             <p className='p-col-1'>Precio:</p>
-                            <p className='p-col-1'>{moneda}{formatMoney(precio)}</p>
+                            <p className='p-col-1'>{propiedad.moneda} {formatMoney(propiedad.precio)}</p>
                         </div>
                         <div className='cont-p-col-1'>
                             <p className='p-col-1'>Sup. Cubierta:</p>
