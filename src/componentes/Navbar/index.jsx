@@ -31,20 +31,22 @@ function Navbar() {
         setIsOpen(!isOpen);
     };
 
-    // Cierra menú hamburguesa si se hace clic fuera de él
+    // Cierra el menú hamburguesa al hacer clic o tocar fuera de él
     useEffect(() => {
         function handleClickOutside(event) {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setIsOpen(false);
+                setIsOpen(false); // Cierra el menú
             }
         }
 
-        document.addEventListener('mousedown', handleClickOutside);
+        // Escuchar el evento pointerdown (compatible con mouse y táctil)
+        document.addEventListener('pointerdown', handleClickOutside);
         return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
+            // Limpiar el evento cuando el componente se desmonta
+            document.removeEventListener('pointerdown', handleClickOutside);
         };
     }, []);
-
+    
     const handleMouseEnterAdmin = () => {
         setMuestraMenuAdmin(true);
     };
