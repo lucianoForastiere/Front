@@ -25,6 +25,7 @@ function Navbar() {
     const context = useContext(InmobiliariaContext);
     const dispatch = useDispatch();
     const menuRef = useRef(null); // Referencia para el menú hamburguesa
+    const menuItemsRef = useRef([]); // Referencia para los elementos del menú
 
     // Abre/cierra menú hamburguesa
     const toggleMenu = () => {
@@ -34,8 +35,12 @@ function Navbar() {
     // Cierra el menú hamburguesa al hacer clic o tocar fuera de él
     useEffect(() => {
         function handleClickOutside(event) {
-            if (menuRef.current && !menuRef.current.contains(event.target)) {
-                setIsOpen(false); // Cierra el menú
+            // Verificar si el clic o toque es fuera del menú
+            if (
+                menuRef.current && !menuRef.current.contains(event.target) && 
+                !menuItemsRef.current.some(item => item.contains(event.target))
+            ) {
+                setIsOpen(false); // Cierra el menú si no es clic en el menú
             }
         }
 
@@ -46,7 +51,7 @@ function Navbar() {
             document.removeEventListener('pointerdown', handleClickOutside);
         };
     }, []);
-    
+
     const handleMouseEnterAdmin = () => {
         setMuestraMenuAdmin(true);
     };
@@ -215,37 +220,37 @@ function Navbar() {
                                         context.nombreUser && (
                                             <>
                                             <li className='items-pChica'>
-                                                <NavLink to='/admin/creaPropiedad' className='link-navbar'>Crea Propiedad</NavLink>
+                                                <NavLink to='/admin/creaPropiedad' className='link-navbar' ref={el => menuItemsRef.current[0] = el}>Crea Propiedad</NavLink>
                                             </li>
                                             <li className='items-pChica'>
-                                            <NavLink to='/admin/listaPropsAdmin' className='link-navbar'>Lista Propiedades</NavLink>
+                                            <NavLink to='/admin/listaPropsAdmin' className='link-navbar' ref={el => menuItemsRef.current[1] = el}>Lista Propiedades</NavLink>
                                             </li>
                                             <li className='items-pChica'>
-                                                <NavLink to='/admin/creaUsuario' className='link-navbar'>Crea Usuario</NavLink>
+                                                <NavLink to='/admin/creaUsuario' className='link-navbar' ref={el => menuItemsRef.current[2] = el}>Crea Usuario</NavLink>
                                             </li>
                                             <li className='items-pChica'>
-                                            <NavLink to='/admin/listaUsuarios' className='link-navbar'>Lista Usuarios</NavLink>
+                                            <NavLink to='/admin/listaUsuarios' className='link-navbar' ref={el => menuItemsRef.current[3] = el}>Lista Usuarios</NavLink>
                                             </li>
                                             </>
                                         )
                                     }
                                     <li className='items-pChica'>
-                                        <NavLink to='/' className='link-navbar'>Home</NavLink>
+                                        <NavLink to='/' className='link-navbar' ref={el => menuItemsRef.current[4] = el}>Home</NavLink>
                                     </li>
                                     <li className='items-pChica'>
-                                        <Link to='/venta' className='link-navbar'>Venta</Link>
+                                        <Link to='/venta' className='link-navbar' ref={el => menuItemsRef.current[5] = el}>Venta</Link>
                                     </li>
                                     <li className='items-pChica'>
-                                        <NavLink to='/alquiler' className='link-navbar'>Alquiler</NavLink>
+                                        <NavLink to='/alquiler' className='link-navbar' ref={el => menuItemsRef.current[6] = el}>Alquiler</NavLink>
                                     </li>
                                     <li className='items-pChica'>
-                                        <NavLink to='/favoritos' className='link-navbar'>Favoritos</NavLink>
+                                        <NavLink to='/favoritos' className='link-navbar' ref={el => menuItemsRef.current[7] = el}>Favoritos</NavLink>
                                     </li>
                                     <li className='items-pChica'>
-                                        <NavLink to='/nosotros' className='link-navbar'>Nosotros</NavLink>
+                                        <NavLink to='/nosotros' className='link-navbar' ref={el => menuItemsRef.current[8] = el}>Nosotros</NavLink>
                                     </li>
                                     <li className='items-pChica'>
-                                        <NavLink to='/contacto' className='link-navbar'>Contacto</NavLink>
+                                        <NavLink to='/contacto' className='link-navbar' ref={el => menuItemsRef.current[9] = el}>Contacto</NavLink>
                                     </li>
                                     {
                                         context.nombreUser ? (
@@ -256,7 +261,7 @@ function Navbar() {
                                             </li>
                                         ) : (
                                             <li className='items-pChica'>
-                                                <NavLink to='/login' className='link-navbar'>Login</NavLink>
+                                                <NavLink to='/login' className='link-navbar' ref={el => menuItemsRef.current[10] = el}>Login</NavLink>
                                             </li>
                                         )
                                     }
