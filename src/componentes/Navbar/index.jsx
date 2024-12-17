@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import { InmobiliariaContext } from '../../context';
@@ -24,16 +24,34 @@ function Navbar() {
     const [muestraMenuAdmin, setMuestraMenuAdmin] = useState(false);
     const context = useContext(InmobiliariaContext);
     const dispatch = useDispatch();
+    const menuRef = useRef(null); // Referencia para el menú hamburguesa
+
+    // Abre/cierra menú hamburguesa
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
+
+    // Cierra menú hamburguesa si se hace clic fuera de él
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const handleMouseEnterAdmin = () => {
         setMuestraMenuAdmin(true);
     };
     const handleMouseLeaveAdmin = () => {
         setMuestraMenuAdmin(false);
     };
-    //abre/cierra menú Hambur
-    const toggleMenu = () => {
-        setIsOpen(!isOpen);
-    };
+    
     //logout
     const handleLogOut = () => {
         Swal.fire({
@@ -50,8 +68,11 @@ function Navbar() {
                 context.logout();
                 dispatch(resetLogin());
             }
+            //redirijo a home
+            window.location.href = '/';
         });        
     };
+
 
     return (
         <nav>
@@ -90,6 +111,7 @@ function Navbar() {
                             </li>
                         </ul>
                     </div>
+                    {/* items */}
                     <div className='nav-cont-inf'>
                         <ul className='ul-nav-inf'>
                             <li>
@@ -176,6 +198,7 @@ function Navbar() {
                     <div
                         className={`menu-icon ${isOpen ? 'open' : ''}`}
                         onClick={toggleMenu}
+                        ref={menuRef}
                     >
                         <span></span>
                         <span></span>
@@ -222,6 +245,19 @@ function Navbar() {
                                     <li className='items-pChica'>
                                         <NavLink to='/contacto' className='link-navbar'>Contacto</NavLink>
                                     </li>
+                                    {
+                                        context.nombreUser ? (
+                                            <li className='items-pChica'>
+                                                <button onClick={()=>{handleLogOut()}} style={{border:'none', backgroundColor:'transparent'}}>
+                                                    <LogoutIcon sx={{'fontSize':'18px', 'color':'white'}} />
+                                                </button>
+                                            </li>
+                                        ) : (
+                                            <li className='items-pChica'>
+                                                <NavLink to='/login' className='link-navbar'>Login</NavLink>
+                                            </li>
+                                        )
+                                    }
                                 </ul>
                             )
                         }
