@@ -4,8 +4,8 @@ import './estilos.css';
 function Loading() {
     return (
         <div className='cont-loading'>
-            <div class="spinner">
-                <div class="spinnerin"></div>
+            <div class="cont-logo-loading">
+                {/* <img src={} alt='not found' /> */}
             </div>
             <p>Cargando props ...</p>
         </div>
