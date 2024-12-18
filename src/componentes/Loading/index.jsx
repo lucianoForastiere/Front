@@ -1,12 +1,11 @@
 import React from 'react';
+import logo from '../../imagenes/Logo_Y_nombre.jpg';
 import './estilos.css';
 
 function Loading() {
     return (
         <div className='cont-loading'>
-            <div class="cont-logo-loading">
-                {/* <img src={} alt='not found' /> */}
-            </div>
+            <img src={logo} alt='not found' className='logo-loading'/>            
             <p>Cargando props ...</p>
         </div>
     )
