@@ -49,8 +49,6 @@ function Login() {
             if(validaInputs()){
                 dispatch(login(input));
             }
-            //redirijo a home
-            window.location.href = '/';
         }
     };
     
