@@ -37,7 +37,7 @@ export const InmobiliariaProvider = ({children}) => {
             setIsAuthenticated(true);
             setNombreUser(userLogin.user);
         }
-    }, [userLog]);
+    }, []);
 
 
     return (
