@@ -55,9 +55,12 @@ function DetalleProp(){
     const handleMouseLeaveVolver = () => {
         setShowTooltipVolver(false);
     };
-
-    const handleClickAtras = () => {
-        navigate('/');
+    const handleClickAtras = (e) => {
+        if (window.history.length > 1) {
+            navigate(-1);
+        } else {
+            navigate('/'); // Ruta por defecto si no hay historial previo.
+        }
     };
 
     useEffect(() => { 

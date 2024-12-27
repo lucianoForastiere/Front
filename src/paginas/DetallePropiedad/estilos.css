@@ -126,7 +126,7 @@
 }
 /* estilos seccion imagenes */
 .cont-imgs-info{
-    width: 95%;
+    width: 85%;
     height: auto;
     display: flex;
     justify-content: space-between;
