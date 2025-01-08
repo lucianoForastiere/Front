@@ -345,7 +345,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
         });
     };
     
-    //submit
+    //igualmente a pesar de que recibo del padre la función onsubmit, la vuelvo a definir acá
     const OnSubmit = (e) => {
         e.preventDefault();
         //valido
@@ -488,7 +488,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
         <div className='cont-crea-prop'>
             <h1 className='titulo-crea-prop'>
             {
-                op === 'creacion' ? "Crear propiedad" : "Editar propiedad"
+                op === 'editar' ? "Editar propiedad" : "Crear propiedad" 
             }
             </h1>
             <form onSubmit={OnSubmit} className='formulario-crea-prop'>
@@ -568,7 +568,11 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                             className='input-moneda-venta' 
                                             disabled={operacion !== "Venta"}
                                         >
-                                            <option value=''>Moneda</option>
+                                            {
+                                                op === "editar" ? 
+                                                <option value={monedaVenta}>{monedaVenta}</option> :
+                                                <option value=''>Moneda</option>
+                                            }
                                             <option value='USD'>USD</option>
                                             <option value='$'>$</option>
                                         </select>

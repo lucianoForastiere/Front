@@ -35,7 +35,6 @@ function CreaPropiedad() {
             servicios: data.servicios,
             imagenes: data.imagenes,
             video: data.video,
-
         }));
 
         data.imagenes?.forEach((imagen, index) => {
