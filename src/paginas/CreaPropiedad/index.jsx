@@ -72,7 +72,7 @@ function CreaPropiedad() {
         <div className="contenedor-crea-prop">
             {
             context.isAuthenticated ? (                
-                    <FormularioProp handleOnSubmit={handleOnSubmit} />
+                    <FormularioProp handleOnSubmit={handleOnSubmit} op='creacion'/>
             ) : (
                 <h1>No tienes permisos para acceder a esta página</h1>
             )
