@@ -29,19 +29,29 @@ function DetalleProp(){
     const tooltipTextVolver = "Volver atrás";
 
     // Función para reemplazar puntos por saltos de línea
-    function formatTextWithLineBreaks(text) {
-        // Divide el texto por los puntos seguidos, eliminando espacios extra
-        const sentences = text.split('.').filter(sentence => sentence.trim() !== '');
-        return sentences.map((sentence, index) => (
-            <div key={index} className="list-item">
-                {sentence.trim()}.
-            </div>
-        ));
+    function formatearDescripcion(texto) {
+        if (!texto || typeof texto !== 'string') return '';
+
+        const partes = texto.split(/(?<=[.:])\s*/);
+        const resultado = [];
+        let enLista = false;
+
+        for (let parte of partes) {
+            const linea = parte.trim();
+            if (!linea) continue;
+
+            if (linea.endsWith(':')) {
+                resultado.push(`<p>${linea}</p>`);
+                enLista = true;
+            } else if (enLista) {
+                resultado.push(`<p class="p-viñeta">🔹 ${linea}</p>`);
+            } else {
+                resultado.push(`<p>${linea}</p>`);
+            }
+        }
+
+        return resultado.join('');
     }
-    //ejecuto la fuccion para formatear el texto
-    const formattedItems  = propiedad?.descripcion
-        ? formatTextWithLineBreaks(propiedad.descripcion)
-        : "";
 
     const handleMouseEnter = () => {
         setShowTooltipVideo(true);
@@ -56,11 +66,7 @@ function DetalleProp(){
         setShowTooltipVolver(false);
     };
     const handleClickAtras = (e) => {
-        if (window.history.length > 1) {
-            navigate(-1);
-        } else {
-            navigate('/'); // Ruta por defecto si no hay historial previo.
-        }
+        navigate(-2);
     };
 
     useEffect(() => { 
@@ -176,13 +182,11 @@ function DetalleProp(){
                 <div className='cont-titulo-descripcion-form'>
                     <div className='cont-descrip'>
                         <p className='titulo-descrip-prop'>Descripción Propiedad</p>
-                        {/* Renderizar HTML dentro de la descripción */}
-                        <div className="description-list">
-                            {formattedItems}
-                        </div>
+                        <div
+                            className="subCont-texto-descrip-detalle"
+                            dangerouslySetInnerHTML={{ __html: formatearDescripcion(propiedad.descripcion) }}
+                        />
                     </div>
-
-                    
                 </div>
                 
                 {/* google map */}
