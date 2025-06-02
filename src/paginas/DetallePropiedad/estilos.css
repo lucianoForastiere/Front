@@ -217,10 +217,10 @@
 }
 .cont-detalle{
     width: 28%;
-    height: 100%;
+    height: 700px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     border-radius: 5px;
     background-color: black;
@@ -257,7 +257,7 @@
     justify-content: space-between;
     align-items: center;
     background-color: rgb(249, 248, 248);
-    margin-top: 3px;
+    margin-bottom: 3px;
 }
 .ultimo{
     margin-bottom: 10px;

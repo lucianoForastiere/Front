@@ -66,7 +66,7 @@ function DetalleProp(){
         setShowTooltipVolver(false);
     };
     const handleClickAtras = (e) => {
-        navigate(-2);
+        navigate(-1);
     };
 
     useEffect(() => { 
@@ -151,30 +151,38 @@ function DetalleProp(){
                             <p className='p-col-1'>Precio:</p>
                             <p className='p-col-1'>{propiedad.moneda} {formatMoney(propiedad.precio)}</p>
                         </div>
-                        <div className='cont-p-col-1'>
+                        {
+                            propiedad.tipoPropiedad !== 'Terreno' &&
+                            <div className='cont-p-col-1'>
                             <p className='p-col-1'>Sup. Cubierta:</p>
                             <p className='p-col-1'>{propiedad.supCubierta}m2</p>
                         </div>
+                        }
                         <div className='cont-p-col-1'>
                             <p className='p-col-1'>Sup. Total:</p>
                             <p className='p-col-1'>{propiedad.supTotal}m2</p>
                         </div>
-                        <div className='cont-p-col-1'>
-                            <p className='p-col-1'>Dormitorios:</p>
-                            <p className='p-col-1'>{propiedad.dormitorios}</p>
-                        </div>
-                        <div className='cont-p-col-1'>
-                            <p className='p-col-1'>Ambientes:</p>
-                            <p className='p-col-1'>{propiedad.ambientes}</p>
-                        </div>
-                        <div className='cont-p-col-1'>
-                            <p className='p-col-1'>Baños:</p>
-                            <p className='p-col-1'>{propiedad.baños}</p>
-                        </div>
-                        <div className='cont-p-col-1 ultimo'>
-                            <p className='p-col-1'>Cochera:</p>
-                            <p className='p-col-1'>{propiedad.cantCocheras}</p>
-                        </div>
+                        {
+                            propiedad.tipoPropiedad !== 'Terreno' &&
+                            <>
+                                <div className='cont-p-col-1'>
+                                    <p className='p-col-1'>Dormitorios:</p>
+                                    <p className='p-col-1'>{propiedad.dormitorios}</p>
+                                </div>
+                                <div className='cont-p-col-1'>
+                                    <p className='p-col-1'>Ambientes:</p>
+                                    <p className='p-col-1'>{propiedad.ambientes}</p>
+                                </div>
+                                <div className='cont-p-col-1'>
+                                    <p className='p-col-1'>Baños:</p>
+                                    <p className='p-col-1'>{propiedad.baños}</p>
+                                </div>
+                                <div className='cont-p-col-1 ultimo'>
+                                    <p className='p-col-1'>Cochera:</p>
+                                    <p className='p-col-1'>{propiedad.cantCocheras}</p>
+                                </div>
+                            </>
+                        }
                     </div>
                 </div>
 
