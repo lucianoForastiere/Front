@@ -481,7 +481,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
             setVistaPrevia(propiedad.imagenes?.map((img) => ({ url: img })));
             //video
             setVideos(propiedad.video);
-            setVistaPreviaVideo(propiedad.video?.map((video) => ({ url: video })));
+            setVistaPreviaVideo(propiedad.video);
             //servicios
             setServicios(propiedad.servicios);
         }
@@ -555,6 +555,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                     <option value=''>{propiedad.estadoActual ? propiedad.estadoActual : ''}</option>
                                     <option value={'Vendida'}>Vendida</option>
                                     <option value={'Alquilada'}>Alquilada</option>
+                                    <option value={''}>Sin estado</option>
                                 </select>
                             </div>
                         </div>
