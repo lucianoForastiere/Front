@@ -3,14 +3,15 @@ import Card from '../Card';
 import NoHayProps from '../NoHayProps';
 import './styles.css';
 
-function ListaPropiedades({allProps}) {
+function ListaPropiedades({allProps, propiedades}) {
+    const listaPropiedades = allProps || propiedades || [];
 
     return (
         <div className='contGralListaP'>
             <div className='contListaP'>
                 {
-                    allProps[0] ?
-                    allProps.map(p => {
+                    listaPropiedades[0] ?
+                    listaPropiedades.filter(Boolean).map(p => {
                         return (
                             <div className='cont-card' key={p._id}>
                                 <Card className='card' key={p._id}

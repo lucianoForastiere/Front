@@ -60,7 +60,7 @@ function Card(
                 >
                     {/* imagen */}
                     <div className='card-image'>
-                        <img src={imagenes[0]} alt='not found' className='card-img' />
+                        <img src={imagenes?.[0]} alt='not found' className='card-img' />
                     </div>
 
                     {/* mensaje Vendida */}

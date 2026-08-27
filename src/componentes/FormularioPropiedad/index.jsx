@@ -3,6 +3,10 @@ import './estilos.css';
 
 
 function FormularioProp({propiedad, handleOnSubmit, op}) {
+    const propiedadActual = propiedad || {};
+    const MONEDA_VENTA_DEFAULT = 'U$D';
+    const MONEDA_ALQUILER_DEFAULT = '$';
+    const normalizarMoneda = (valor) => valor === 'USD' ? MONEDA_VENTA_DEFAULT : valor;
 
     //tipo de propiedad
     const tipoProps = [
@@ -69,7 +73,20 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
         setTipoPropiedad(e.target.value);
     };
     const handleOnChangeOperacion = (e) => {
-        setOperacion(e.target.value);
+        const nuevaOperacion = e.target.value;
+
+        setOperacion(nuevaOperacion);
+
+        if (nuevaOperacion === 'Venta') {
+            setMonedaVenta((monedaActual) => monedaActual || MONEDA_VENTA_DEFAULT);
+            setMonedaAlq('');
+            return;
+        }
+
+        if (nuevaOperacion === 'Alquiler') {
+            setMonedaAlq((monedaActual) => monedaActual || MONEDA_ALQUILER_DEFAULT);
+            setMonedaVenta('');
+        }
     };
     const handleOnChangeMonedaVenta = (e) => {
         setMonedaVenta(e.target.value);
@@ -404,25 +421,12 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
 
     //ejecuto funcion para asignar moneda SI la prop está en Venta y Alq
     useEffect(() => {
-        if(operacion === "Venta" && monedaVenta){
-            setMoneda(monedaVenta);
-            setMonedaAlq(null);
-            //vuelvo al elemento select id monedaAlq a su valor por defecto
-            document.getElementById('monedaAlq').value = 'Moneda';
-
-        }else if(operacion === "Alquiler" && monedaAlq){
-            setMoneda(monedaAlq);
-            setMonedaVenta(null);
-            //vuelvo al elemento select id monedaVenta a su valor por defecto
-            document.getElementById('monedaVenta').value = 'Moneda';
-            //y lo desabilito
-            document.getElementById('monedaVenta').disabled = true;
-        }else if(!operacion){
-            setMonedaAlq(null);
-            setMonedaVenta(null);
-            setMoneda(null);
-            document.getElementById('monedaAlq').value = 'Moneda';
-            document.getElementById('monedaVenta').value = 'Moneda';
+        if(operacion === "Venta"){
+            setMoneda(monedaVenta || MONEDA_VENTA_DEFAULT);
+        }else if(operacion === "Alquiler"){
+            setMoneda(monedaAlq || MONEDA_ALQUILER_DEFAULT);
+        }else{
+            setMoneda('');
         }
     }, [monedaVenta, monedaAlq, operacion]);
     //ejecuto funcion para asignar precio SI la prop está en Venta y Alq
@@ -441,20 +445,20 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
     }, [precioVenta, precioAlq, operacion]);
     //efecto para cargar los datos de la propiedad Si es editar
     useEffect(() => {
-        if(propiedad){
+        if(propiedad?._id){
             setTituloPublicacion(propiedad.tituloPublicacion);
             setTipoPropiedad(propiedad.tipoPropiedad);
             setOperacion(propiedad.operacion);
             if(propiedad.operacion === "Venta"){                
                 //selecciono el radio btn
                 document.getElementById("operacionVenta").checked = true;
-                setMonedaVenta(propiedad.moneda);
+                setMonedaVenta(normalizarMoneda(propiedad.moneda) || MONEDA_VENTA_DEFAULT);
                 setPrecioVenta(propiedad.precio);
             }
             if(propiedad.operacion === "Alquiler"){
                 //selecciono el radio btn
                 document.getElementById("operacionAlquiler").checked = true;
-                setMonedaAlq(propiedad.moneda);
+                setMonedaAlq(normalizarMoneda(propiedad.moneda) || MONEDA_ALQUILER_DEFAULT);
                 setPrecioAlq(propiedad.precio);
             }
             setDescripcion(propiedad.descripcion);
@@ -484,6 +488,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
             setVistaPreviaVideo(propiedad.video);
             //servicios
             setServicios(propiedad.servicios);
+            setEstadoActual(propiedad.estadoActual || '');
         }
     }
     , [propiedad]);
@@ -527,7 +532,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                     id='tipoPropiedad'
                                     onChange={(e) => { handleOnChangeTipoPropiedad(e) }}
                                     onBlur={handleOnBlur}
-                                    placeholder={propiedad ? propiedad.tipoPropiedad : ''}
+                                    placeholder={propiedadActual.tipoPropiedad || ''}
                                     className='input-tituloPublicacion'
                                 >
                                     <option value=''>{propiedad?.tipoPropiedad ? propiedad.tipoPropiedad : ''}</option>
@@ -549,10 +554,10 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                     id='estadoActual'
                                     onChange={(e) => {handleOnChangeEstadoActual(e)}}
                                     onBlur={handleOnBlur}
-                                    placeholder={propiedad ? propiedad.estadoActual : ''}
+                                    placeholder={propiedadActual.estadoActual || ''}
                                     className='input-tituloPublicacion'
                                 >
-                                    <option value=''>{propiedad.estadoActual ? propiedad.estadoActual : ''}</option>
+                                    <option value=''>{propiedadActual.estadoActual || ''}</option>
                                     <option value={'Vendida'}>Vendida</option>
                                     <option value={'Alquilada'}>Alquilada</option>
                                     <option value={''}>Sin estado</option>
@@ -590,12 +595,8 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                             className='input-moneda-venta' 
                                             disabled={operacion !== "Venta"}
                                         >
-                                            {
-                                                op === "editar" ? 
-                                                <option value={monedaVenta}>{monedaVenta}</option> :
-                                                <option value=''>Moneda</option>
-                                            }
-                                            <option value='USD'>USD</option>
+                                            <option value='' disabled hidden></option>
+                                            <option value='U$D'>U$D</option>
                                             <option value='$'>$</option>
                                         </select>
                                         <input 
@@ -639,8 +640,8 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                             className='input-moneda-alq' 
                                             disabled={operacion !== 'Alquiler'}
                                         >
-                                            <option value=''>Moneda</option>
-                                            <option value='USD'>USD</option>
+                                            <option value='' disabled hidden></option>
+                                            <option value='U$D'>U$D</option>
                                             <option value='$'>$</option>
                                         </select>
                                         <input 

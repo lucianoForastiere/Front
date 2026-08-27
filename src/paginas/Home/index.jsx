@@ -8,7 +8,7 @@ import LandingC from '../../componentes/LandingC';
 import BarraLateral from '../../componentes/Barra-Lateral';
 import ListaPropiedades from '../../componentes/ListaPropiedades';
 import Paginacion from '../../componentes/Paginacion';
-import CotizacionDolar from '../../componentes/CotizacionDolar';
+//import CotizacionDolar from '../../componentes/CotizacionDolar';
 import WhatsAppButton from '../../componentes/BotonWhastApp';
 import './estilos.css';
 
@@ -78,7 +78,7 @@ function Home() {
               }
             </div>
           </div>
-          <CotizacionDolar />
+          
           {/* botón whatsapp */}
           <WhatsAppButton />
         </div>

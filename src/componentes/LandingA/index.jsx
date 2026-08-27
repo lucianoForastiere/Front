@@ -1,12 +1,13 @@
-import React  from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import logo from '../../imagenes/Logo_Y_nombre.jpg';
+import logo from '../../imagenes/LogoTrans.png';
 import './estilos.css';
 
 function LandingPage2() {
 
     return (
         <div className='contGralLanding'>   
+
             {/* cont logo */}
             <div className='cont-logo-landing'>
                 <div className='sub-cont-logo-landing sub-cont-sup left-slide'>
@@ -34,4 +35,3 @@ function LandingPage2() {
 }
 
 export default LandingPage2;
-
