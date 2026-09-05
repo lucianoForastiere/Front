@@ -2,54 +2,51 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     width: 100%;
-    height: 620px;
+    min-height: calc(100svh - 4.5rem);
     background-image: url('../../imagenes/img-1.jpg');
     background-size: cover;
     background-position: center;
+    overflow: visible;
 }
 
-/* =======================
-   CONTENEDOR DEL LOGO
-   ======================= */
+.contGralLanding::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0.22) 48%, rgba(0, 0, 0, 0.42) 100%);
+    pointer-events: none;
+}
+
 .cont-logo-landing {
     width: 100%;
-    height: 80%;
+    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    z-index: 1;
+    padding: clamp(26px, 5vh, 56px) 16px clamp(18px, 4vh, 38px);
+    box-sizing: border-box;
 }
 
-/* 🎯 Nuevo estilo profesional */
 .sub-cont-logo-landing {
-    width: 250px;
-    height: 250px;
+    width: clamp(240px, 28vw, 360px);
+    height: clamp(240px, 28vw, 360px);
     display: flex;
     justify-content: center;
     align-items: center;
-
-    border-radius: 50%;
-
-    /* Fondo sutil + elegante */
-    background: rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
 }
 
 .logo-landing {
-    height: 450px;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
     animation: fadeIn 2.2s ease-in-out;
 }
 
-/* =======================
-   ANIMACIONES
-   ======================= */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -99,68 +96,202 @@
     }
 }
 
-/* =======================
-   BOTONES
-   ======================= */
 .cont-inf {
     width: 100%;
-    height: 15%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    position: relative;
+    z-index: 2;
+    margin-bottom: clamp(18px, 4vh, 38px);
 }
 
 .sub-cont-infe {
-    width: 70%;
-    height: 80px;
+    width: min(82%, 900px);
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: clamp(18px, 4vw, 46px);
     background-color: transparent;
 }
 
 .btn-landing {
-    width: 250px;
-    font-size: 28px;
-    font-weight: 500;
-    padding: 10px;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    background-color: rgba(0, 0, 0, 0.75);
+    width: clamp(180px, 21vw, 230px);
+    min-height: clamp(145px, 19vh, 185px);
+    padding: 22px 16px 18px;
+    color: var(--color-blanco);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: linear-gradient(145deg, rgba(34, 35, 35, 0.95), rgba(18, 19, 19, 0.97));
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.32);
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
-/* =======================
-   RESPONSIVE
-   ======================= */
+.btn-landing:hover {
+    transform: translateY(-4px);
+}
+
+.btn-landing-icon {
+    width: 58px;
+    height: 58px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    margin-bottom: 16px;
+    opacity: 0.95;
+}
+
+.btn-landing-prefijo {
+    font-size: 20px;
+    font-weight: 200;
+    line-height: 1;
+    letter-spacing: 2px;
+}
+
+.btn-landing-texto {
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: 1.5px;
+    margin-top: 10px;
+}
+
+.btn-landing-linea {
+    width: 54px;
+    height: 2px;
+    background-color: #b89b61;
+    margin-top: 17px;
+}
+
 @media (max-width: 950px) {
-    .sub-cont-logo-landing {
-        width: 200px;
-        height: 200px;
+    .contGralLanding {
+        min-height: calc(100svh - 4.5rem);
     }
 
-    .logo-landing {
-        width: 140px;
-        height: 140px;
+    .cont-logo-landing {
+        padding-bottom: 24px;
     }
 
     .btn-landing {
-        width: auto;
-        font-size: 20px;
-        padding: 12px 10px;
+        width: 30%;
+        min-height: 158px;
+        padding: 18px 12px 16px;
+    }
+
+    .btn-landing-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .btn-landing-prefijo {
+        font-size: 18px;
+    }
+
+    .btn-landing-texto {
+        font-size: 22px;
+    }
+}
+
+@media (max-width: 840px) {
+    .contGralLanding {
+        min-height: calc(100svh - 118px);
     }
 }
 
 @media (max-width: 660px) {
+    .contGralLanding {
+        min-height: calc(100svh - 118px);
+        background-position: center top;
+    }
+
+    .cont-logo-landing {
+        padding: 32px 12px 22px;
+    }
+
     .sub-cont-logo-landing {
-        width: 180px;
-        height: 180px;
+        width: clamp(200px, 58vw, 255px);
+        height: clamp(200px, 58vw, 255px);
     }
 
     .logo-landing {
-        width: 120px;
-        height: 120px;
+        width: min(72vw, 270px);
+        max-width: 92vw;
+    }
+
+    .cont-inf {
+        margin-bottom: 18px;
+    }
+
+    .sub-cont-infe {
+        width: 92%;
+        gap: 10px;
+    }
+
+    .btn-landing {
+        width: calc((100% - 20px) / 3);
+        min-height: 124px;
+        padding: 13px 7px 12px;
+        border-radius: 8px;
+    }
+
+    .btn-landing-icon {
+        width: 38px;
+        height: 38px;
+        margin-bottom: 11px;
+    }
+
+    .btn-landing-prefijo {
+        font-size: 13px;
+        letter-spacing: 1px;
+    }
+
+    .btn-landing-texto {
+        font-size: clamp(15px, 4.2vw, 18px);
+        letter-spacing: 0.5px;
+        margin-top: 6px;
+    }
+
+    .btn-landing-linea {
+        width: 38px;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 420px) {
+    .contGralLanding {
+        min-height: calc(100svh - 118px);
+    }
+}
+
+@media (max-width: 390px) {
+    .sub-cont-infe {
+        gap: 7px;
+    }
+
+    .btn-landing {
+        width: calc((100% - 14px) / 3);
+        min-height: 112px;
+        padding: 10px 5px;
+    }
+
+    .btn-landing-icon {
+        width: 34px;
+        height: 34px;
+    }
+
+    .btn-landing-prefijo {
+        font-size: 12px;
+    }
+
+    .btn-landing-texto {
+        font-size: clamp(13px, 4vw, 16px);
     }
 }

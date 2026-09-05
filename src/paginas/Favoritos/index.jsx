@@ -11,8 +11,8 @@ function FavoritosPage() {
     // Estados para los filtros
     const [operacion, setOperacion] = useState('');
     const [tipoPropiedad, setTipoPropiedad] = useState('');
-    const [precioMin, setPrecioMin] = useState(1000);
-    const [precioMax, setPrecioMax] = useState(10000000);
+    const [precioMin, setPrecioMin] = useState('');
+    const [precioMax, setPrecioMax] = useState('');
     const [setCurrentPage] = useState(1); // Agregar manejo de página
 
     // 1. Cargar favoritos del localStorage

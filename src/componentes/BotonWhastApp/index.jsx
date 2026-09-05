@@ -1,5 +1,6 @@
 // WhatsAppButton.js
 import React from 'react';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import './estilos.css';
 
 const WhatsAppButton = () => {
@@ -10,11 +11,7 @@ const WhatsAppButton = () => {
             target="_blank"
             rel="noopener noreferrer"
         >
-            <img
-                src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
-                alt="WhatsApp"
-                className="whatsapp-icon"
-            />
+            <WhatsAppIcon className="whatsapp-icon" aria-label="WhatsApp" />
         </a>
     );
 };

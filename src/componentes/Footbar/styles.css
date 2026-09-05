@@ -28,8 +28,10 @@ footer ul {
     width: 100%;
 }
 .logo-footbar {
-    width: 320px;
-    height: 260px;
+    width: min(360px, 32vw);
+    height: auto;
+    display: block;
+    object-fit: contain;
 }
 footer ul li {
     display: inline-block;
@@ -107,8 +109,8 @@ footer ul li h2 {
         align-items: center;
     }
     .logo-footbar {
-        width: 220px;
-        height: 180px;
+        width: min(300px, 82vw);
+        height: auto;
         margin-top: 20px;
     }
     footer ul {

@@ -1,67 +1,99 @@
 .cont-landing-B {
     width: 100%;
-    height: 707px;
+    min-height: 100svh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: var(--color-negro);
+    background-color: #f1eeee;
+    padding: clamp(54px, 9vh, 92px) 16px clamp(42px, 8vh, 72px);
+    box-sizing: border-box;
 }
+
 .texto-somos {
     text-align: center;
-    font-size: 30px;
-    color: var(--color-blanco);
-    margin: -30px 0 10px 0;
+    font-size: clamp(42px, 5vw, 58px);
+    line-height: 1;
+    font-weight: 300;
+    letter-spacing: 18px;
+    color: #222;
+    margin: 0 0 18px 0;
+    padding-left: 18px;
 }
-.logo-landing-B {
-    height: 23rem;
-    border-radius: 10px;
-}
-/* Botón contacto */
-.btn-contactanos-home {
-    margin-top: 40px;
-    width: 200px;
-    padding: 10px 8px;
-    border: 1px solid var(--color-blanco);
-    border-radius: 20px;
-    font-size: 25px;
-    font-weight: 100;
-    color: var(--color-blanco);
-    background-color: transparent;
-    cursor: pointer;
-    box-shadow: 0 0 0 0 rgba(202, 203, 204, 0.7);
-    animation: pulse 2s infinite;
-}
-@keyframes pulse {
-    0% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(241, 241, 242, 0.7);
-    }
 
-    70% {
-        transform: scale(1);
-        box-shadow: 0 0 0 10px rgba(52, 152, 219, 0);
-    }
-
-    100% {
-        transform: scale(0.95);
-        box-shadow: 0 0 0 0 rgba(52, 152, 219, 0);
-    }
+.separador-somos {
+    width: 116px;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 28px;
 }
+
+.separador-somos::before {
+    content: '';
+    width: 100%;
+    height: 1px;
+    background-color: #222;
+}
+
+.separador-somos span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #222;
+    position: absolute;
+}
+
 .texto-inf-landingB {
     text-align: center;
-    font-size: 23px;
-    color: var(--color-blanco);
+    font-size: clamp(20px, 2.4vw, 26px);
+    line-height: 1.58;
+    font-weight: 300;
+    color: #161616;
+    margin: 0;
 }
 
-/* responsive */
-@media screen and (max-width: 700px){
-    .logo-landing-B {
-        height: 17rem;
-        border-radius: 10px;
+.btn-contactanos-home {
+    margin-top: 28px;
+    width: min(405px, 82vw);
+    padding: 18px;
+    border: 2px double #f1eeee;
+    outline: 2px solid #202020;
+    outline-offset: 3px;
+    border-radius: 999px;
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: 300;
+    letter-spacing: 9px;
+    color: #f7f7f7;
+    background-color: #202020;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+@media screen and (max-width: 700px) {
+    .cont-landing-B {
+        min-height: 100svh;
+        padding: 54px 14px 42px;
     }
+
+    .texto-somos {
+        letter-spacing: 13px;
+        padding-left: 13px;
+    }
+
     .texto-inf-landingB {
         font-size: 18px;
-        padding: 5px 10px;
+        line-height: 1.55;
+    }
+
+    .texto-inf-landingB br {
+        display: none;
+    }
+
+    .btn-contactanos-home {
+        letter-spacing: 6px;
+        padding: 15px 14px;
     }
 }

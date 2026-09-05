@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import Logo from '../../imagenes/LogoNombre.jpg';
+import Logo from '../../imagenes/Logos/logo-horizontal-claro.png';
 
 import './styles.css';
 

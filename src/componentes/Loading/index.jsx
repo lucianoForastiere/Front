@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../imagenes/Logo_Y_nombre.jpg';
+import logo from '../../imagenes/Logos/logo-circular.png';
 import './estilos.css';
 
 function Loading() {

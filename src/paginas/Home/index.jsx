@@ -16,8 +16,8 @@ function Home() {
   const loading = useSelector(state => state.loading);
   const [operacion, setOperacion] = useState('todas');
   const [tipoPropiedad, setTipoPropiedad] = useState('todos');
-  const [precioMin, setPrecioMin] = useState(1000);
-  const [precioMax, setPrecioMax] = useState(10000000);
+  const [precioMin, setPrecioMin] = useState('');
+  const [precioMax, setPrecioMax] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const allProps = useSelector(state => state.propiedades);
   const totalPropiedades = useSelector(state => state.totPropiedades);

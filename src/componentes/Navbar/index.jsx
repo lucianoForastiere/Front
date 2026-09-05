@@ -4,7 +4,6 @@ import { Link, NavLink } from 'react-router-dom';
 import { InmobiliariaContext } from '../../context';
 import { resetLogin } from '../../redux/actions';
 import { logout } from '../../localStorage';
-import logo from '../../imagenes/ScreenShot146.jpg';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import MailIcon from '@mui/icons-material/Mail';
@@ -13,6 +12,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Swal from 'sweetalert2';
+import logoNavbar from '../../imagenes/Logos/logo-horizontal-claro.png';
 import './estilos.css';
 
 
@@ -86,7 +86,9 @@ function Navbar() {
                 {/* Logo */}
                 <div className='nav-col1'>
                     <NavLink to='/'>
-                        <img src={logo} alt='img not found' className='nav-logo' />
+                        <div className='nav-brand'>
+                            <img src={logoNavbar} alt='Juan Forastieri Negocios Inmobiliarios' className='nav-logo-img' />
+                        </div>
                     </NavLink>
                 </div>
                 {/* barra sup */}

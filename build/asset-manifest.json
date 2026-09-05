@@ -1,23 +1,22 @@
 {
   "files": {
-    "main.css": "/static/css/main.af527a23.css",
-    "main.js": "/static/js/main.47338d4e.js",
+    "main.css": "/static/css/main.8b32dcb5.css",
+    "main.js": "/static/js/main.af13a627.js",
     "static/js/453.80efc53e.chunk.js": "/static/js/453.80efc53e.chunk.js",
     "static/media/noHayProps.jpg": "/static/media/noHayProps.340361b386da90b4b57d.jpg",
-    "static/media/LogoTrans.png": "/static/media/LogoTrans.1dfe35c7af9747bd9d02.png",
     "static/media/img-3.jpg": "/static/media/img-3.76ca5f25b2bfa59d1563.jpg",
     "static/media/img-2.jpg": "/static/media/img-2.0e4abaac06a563df887d.jpg",
     "static/media/edif-1.jpg": "/static/media/edif-1.a6ab9c7973975cb99d26.jpg",
     "static/media/img-1.jpg": "/static/media/img-1.7190f7f51801bb0706f7.jpg",
-    "static/media/LogoNombre.jpg": "/static/media/LogoNombre.53647355a1c1b2f95b88.jpg",
-    "static/media/Logo_Y_nombre.jpg": "/static/media/Logo_Y_nombre.ecd9b8a3e420e2df8ab9.jpg",
+    "static/media/logo-circular.png": "/static/media/logo-circular.46473729f0693223cc2a.png",
+    "static/media/logo-horizontal-claro.png": "/static/media/logo-horizontal-claro.cff782473b1e03e7706e.png",
     "index.html": "/index.html",
-    "main.af527a23.css.map": "/static/css/main.af527a23.css.map",
-    "main.47338d4e.js.map": "/static/js/main.47338d4e.js.map",
+    "main.8b32dcb5.css.map": "/static/css/main.8b32dcb5.css.map",
+    "main.af13a627.js.map": "/static/js/main.af13a627.js.map",
     "453.80efc53e.chunk.js.map": "/static/js/453.80efc53e.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.af527a23.css",
-    "static/js/main.47338d4e.js"
+    "static/css/main.8b32dcb5.css",
+    "static/js/main.af13a627.js"
   ]
 }
