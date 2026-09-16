@@ -4,6 +4,7 @@ import Navbar from './componentes/Navbar';
 import Home from './paginas/Home';
 import LoginPage from './paginas/Login';
 import Footbar from './componentes/Footbar';
+import SEO from './componentes/SEO';
 import PropsVenta from './paginas/PropsVenta';
 import PropsAlquiler from './paginas/PropsAlquiler';
 import NosotrosPage from './paginas/Nosotros';
@@ -20,6 +21,12 @@ import './App.css';
 
 
 function App() {
+  const privatePage = (title, page) => (
+    <>
+      <SEO title={title} noIndex />
+      {page}
+    </>
+  );
 
   return (
     <InmobiliariaProvider>
@@ -29,20 +36,20 @@ function App() {
 
         <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/login' element={<LoginPage/>} />
+          <Route path='/login' element={privatePage('Login', <LoginPage/>)} />
           <Route path='/venta' element={<PropsVenta/>} />
           <Route path='/alquiler' element={<PropsAlquiler />} />
           <Route path='/nosotros' element={<NosotrosPage/>} />
           <Route path='/contacto' element={<ContactoPAntallaCH/>} />
           <Route path='/detalle/:id' element={<DetalleProp/>} />
-          <Route path='/favoritos' element={<FavoritosPage/>} />
+          <Route path='/favoritos' element={privatePage('Favoritos', <FavoritosPage/>)} />
           {/* rutas para Admin */}
-          <Route path='/admin/creaPropiedad' element={<CreaPropiedad />} />
-          <Route path='/admin/listaPropsAdmin' element={<ListaPropsAdminPage />} />
-          <Route path='admin/editaProp/:_id' element={<EditaPropiedad />} />
-          <Route path='/admin/creaUsuario' element={<AltaUsuarioPage />} />
-          <Route path='/admin/listaUsuarios' element={<ListaUsuariosPage />} />
-          <Route path='/admin/editaUsuario/:_id' element={<EditaUsuarioPage />} />
+          <Route path='/admin/creaPropiedad' element={privatePage('Crear propiedad', <CreaPropiedad />)} />
+          <Route path='/admin/listaPropsAdmin' element={privatePage('Administrar propiedades', <ListaPropsAdminPage />)} />
+          <Route path='admin/editaProp/:_id' element={privatePage('Editar propiedad', <EditaPropiedad />)} />
+          <Route path='/admin/creaUsuario' element={privatePage('Crear usuario', <AltaUsuarioPage />)} />
+          <Route path='/admin/listaUsuarios' element={privatePage('Administrar usuarios', <ListaUsuariosPage />)} />
+          <Route path='/admin/editaUsuario/:_id' element={privatePage('Editar usuario', <EditaUsuarioPage />)} />
           
           <Route path='*' element={<Home />} />
         </Routes>

@@ -20,6 +20,7 @@ function ListaPropiedades({allProps, propiedades}) {
                                     tipoPropiedad={p.tipoPropiedad}
                                     ubicacion={p.ubicacion}
                                     operacion={p.operacion}
+                                    ofertas={p.ofertas}
                                     moneda={p.moneda}
                                     precio={p.precio}
                                     imagenes={p.imagenes}

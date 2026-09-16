@@ -6,6 +6,7 @@ import BarraLateral from '../../componentes/Barra-Lateral';
 import ListaPropiedades from '../../componentes/ListaPropiedades';
 import WhatsAppButton from '../../componentes/BotonWhastApp';
 import Paginacion from '../../componentes/Paginacion';
+import SEO from '../../componentes/SEO';
 
 
 function PropsAlquiler() {
@@ -36,6 +37,11 @@ function PropsAlquiler() {
 
     return (
         <div className='cont-prop-Venta'>
+            <SEO
+                title="Propiedades en alquiler"
+                description="Propiedades en alquiler en Olavarria: casas, departamentos, locales, terrenos y cocheras disponibles."
+                path="/alquiler"
+            />
             <h1 className='titulo-peopsVenta'>Propiedades en Alquiler</h1>
             {
                 loading ? (

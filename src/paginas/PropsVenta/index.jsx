@@ -6,6 +6,7 @@ import BarraLateral from '../../componentes/Barra-Lateral';
 import ListaPropiedades from '../../componentes/ListaPropiedades';
 import WhatsAppButton from '../../componentes/BotonWhastApp';
 import Paginacion from '../../componentes/Paginacion';
+import SEO from '../../componentes/SEO';
 import './estilos.css';
 
 function PropsVenta() {
@@ -35,6 +36,11 @@ function PropsVenta() {
 
     return (
         <div className='cont-prop-Venta'>
+            <SEO
+                title="Propiedades en venta"
+                description="Casas, departamentos, terrenos, locales y cocheras en venta en Olavarria. Consultas directas con Forastieri Propiedades."
+                path="/venta"
+            />
             <h1 className='titulo-peopsVenta'>Propiedades en Venta</h1>
             {
                 loading ? (

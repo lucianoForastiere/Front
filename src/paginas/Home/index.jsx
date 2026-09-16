@@ -8,6 +8,7 @@ import LandingC from '../../componentes/LandingC';
 import BarraLateral from '../../componentes/Barra-Lateral';
 import ListaPropiedades from '../../componentes/ListaPropiedades';
 import Paginacion from '../../componentes/Paginacion';
+import SEO, { siteUrl } from '../../componentes/SEO';
 //import CotizacionDolar from '../../componentes/CotizacionDolar';
 import WhatsAppButton from '../../componentes/BotonWhastApp';
 import './estilos.css';
@@ -25,6 +26,17 @@ function Home() {
   const propiedadesPorPagina = 12;
   const limit = propiedadesPorPagina;
   const offset = (currentPage - 1) * limit;
+  const businessJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'RealEstateAgent',
+    name: 'Forastieri Propiedades',
+    url: siteUrl,
+    areaServed: 'Olavarria, Buenos Aires, Argentina',
+    telephone: '+542281359060',
+    sameAs: [
+      'https://www.instagram.com/jf.negociosinmobiliarios/',
+    ],
+  };
 
   //efecto para iniciar la pagina desde la parte SUPERIOR
   useEffect(() => {
@@ -39,6 +51,12 @@ function Home() {
 
   return (
     <div>
+      <SEO
+        title="Inmobiliaria en Olavarria"
+        description="Forastieri Propiedades: casas, departamentos, terrenos y locales en venta y alquiler en Olavarria."
+        path="/"
+        jsonLd={businessJsonLd}
+      />
       {loading ? (
         <Loading />
       ) : (

@@ -1,3 +1,4 @@
+import { coincideOferta } from '../../Helps/ofertas';
 import React, { useEffect, useState } from 'react';
 import BarraLateral from '../../componentes/Barra-Lateral';
 import ListaFavoritos from '../../componentes/ListaFavoritos';
@@ -13,7 +14,7 @@ function FavoritosPage() {
     const [tipoPropiedad, setTipoPropiedad] = useState('');
     const [precioMin, setPrecioMin] = useState('');
     const [precioMax, setPrecioMax] = useState('');
-    const [setCurrentPage] = useState(1); // Agregar manejo de página
+    const [, setCurrentPage] = useState(1); // Agregar manejo de página
 
     // 1. Cargar favoritos del localStorage
     useEffect(() => {
@@ -26,18 +27,10 @@ function FavoritosPage() {
     useEffect(() => {
         let propsFiltradas = [...fav];
 
-        if (operacion) {
-            propsFiltradas = propsFiltradas.filter(prop => prop.operacion === operacion)
-        }
-
-        if (tipoPropiedad) {
-            propsFiltradas = propsFiltradas.filter(prop => prop.tipoPropiedad === tipoPropiedad);
-        }
-
-        //filtro por precio min
-        propsFiltradas = propsFiltradas.filter(prop => prop.precio >= precioMin );
-        //filtro por precio max
-        propsFiltradas = propsFiltradas.filter(prop => prop.precio <= precioMax );
+        propsFiltradas = propsFiltradas.filter(prop =>
+            (!tipoPropiedad || tipoPropiedad === 'todos' || prop.tipoPropiedad === tipoPropiedad) &&
+            coincideOferta(prop, operacion, precioMin, precioMax)
+        );
 
         setFilteredFav(propsFiltradas);
     }, [fav, operacion, tipoPropiedad, precioMin, precioMax]);

@@ -7,7 +7,7 @@ import Modal from '../../componentes/Modal';
 import CarruselImgPequeñas from '../CarruselImgPequeñas';
 import './styles.css';
 
-function Carrusel({imagenes}) {
+function Carrusel({imagenes, altBase = 'Propiedad publicada por Forastieri Propiedades'}) {
 
     const [indexImgActual, setIndexImgActual] = useState(0);
     const dispatch = useDispatch();    
@@ -53,7 +53,7 @@ function Carrusel({imagenes}) {
                 {/* imagen a mostrar */}
                 <img 
                     src={imagenes[indexImgActual]} 
-                    alt='' 
+                    alt={`${altBase} - imagen ${indexImgActual + 1}`}
                     onClick={() => handleOpenModal()}
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}

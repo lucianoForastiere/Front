@@ -1,3 +1,103 @@
+.operacion-con-precios.cont-operaciones {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+    gap: 16px;
+    margin-top: 8px;
+    align-items: stretch;
+}
+.operacion-con-precios .tarjeta-operacion {
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    border: 1px solid #d5dbe1;
+    border-radius: 10px;
+    background: #fafbfc;
+}
+.selector-operacion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 32px;
+}
+.selector-operacion input {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    accent-color: #526779;
+    cursor: pointer;
+}
+.ayuda-operaciones {
+    margin: 4px 0 8px;
+    color: #46515d;
+    font-size: 14px;
+}
+.error-oferta {
+    color: #b42318;
+    font-size: 13px;
+}
+.operacion-con-precios .tarjeta-operacion.seleccionada {
+    border-color: #526779;
+    background: #f3f6f8;
+}
+.operacion-con-precios .cont-venta,
+.operacion-con-precios .cont-alquiler {
+    width: 100%;
+    justify-content: space-between;
+}
+.operacion-con-precios .label-venta,
+.operacion-con-precios .label-alq {
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.operacion-con-precios .cont-precio-venta,
+.operacion-con-precios .cont-precio-alq {
+    display: grid;
+    grid-template-columns: 85px minmax(0, 1fr);
+    gap: 12px;
+    width: 100%;
+    align-items: start;
+}
+.operacion-con-precios .campo-moneda,
+.operacion-con-precios .campo-valor {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+.operacion-con-precios .campo-moneda label,
+.operacion-con-precios .campo-valor label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #46515d;
+}
+.operacion-con-precios select,
+.operacion-con-precios .input-precio-venta {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: 42px;
+    padding: 8px;
+    border: 1px solid #bac3cc;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 16px;
+    color: #263440;
+}
+.operacion-con-precios select:focus-visible,
+.operacion-con-precios input:focus-visible {
+    outline: 2px solid #526779;
+    outline-offset: 2px;
+}
 .cont-crea-prop {
     width: 100%;
     min-height: 90vh;
@@ -121,6 +221,39 @@
 }
 .input-precio-venta {
     width: 110px;
+}
+/* Apariencia uniforme de los campos en todas las etapas del formulario. */
+.formulario-crea-prop input:not([type='checkbox']):not([type='radio']),
+.formulario-crea-prop select,
+.formulario-crea-prop textarea {
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 42px;
+    padding: 8px;
+    border: 1px solid #bac3cc;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #263440;
+}
+.formulario-crea-prop input:focus-visible,
+.formulario-crea-prop select:focus-visible,
+.formulario-crea-prop textarea:focus-visible {
+    outline: 2px solid #526779;
+    outline-offset: 2px;
+}
+.formulario-crea-prop textarea {
+    resize: vertical;
+}
+.formulario-crea-prop .input-error,
+.formulario-crea-prop [aria-invalid='true'] {
+    border-color: #b42318;
+}
+.formulario-crea-prop .cont-servicios {
+    box-sizing: border-box;
+    background-color: #fff;
+    border: 1px solid #bac3cc;
+    border-radius: 6px;
 }
 /* botones */
 .cont-campReq-botones,

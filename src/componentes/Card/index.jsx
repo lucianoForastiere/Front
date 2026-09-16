@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { formatMoney } from '../../Helps';
+import PreciosPropiedad from '../PreciosPropiedad';
 import Favorito from '../Favoritos';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import IconoSup from '../../imagenes/Iconos/IconoSup';
@@ -15,6 +15,7 @@ function Card(
         id,
         tituloPublicacion,
         operacion,
+        ofertas,
         moneda,
         precio,
         ubicacion,
@@ -34,21 +35,14 @@ function Card(
 
     //estado para el hover
     const [showDetail, setShowDetail] = useState(false);
+    const imageAlt = `${tipoPropiedad || 'Propiedad'} en ${operacion || 'operacion'} - ${ubicacion?.direccionPublicacion || 'Olavarria'}`;
 
     return (
         <div className='contCard'>
             {/* titulo */}
             <div className='card-title'>
                 <h2 className='titulo-card'>
-                    {
-                        operacion === "Venta" && "Venta"
-                    }
-                    {
-                        operacion === "Alquiler" && "Alquiler"
-                    }
-                    {
-                        operacion === "Venta y Alquiler" && "Venta / Alquiler"
-                    }
+                    {operacion}
                 </h2>
             </div>
 
@@ -60,7 +54,7 @@ function Card(
                 >
                     {/* imagen */}
                     <div className='card-image'>
-                        <img src={imagenes?.[0]} alt='not found' className='card-img' />
+                        <img src={imagenes?.[0]} alt={imageAlt} className='card-img' loading="lazy" />
                     </div>
 
                     {/* mensaje Vendida */}
@@ -86,7 +80,7 @@ function Card(
 
                 <div className='cont-precio-fav'>
                     <div className='cont-precio'>
-                        <p className='precio'>{moneda} {formatMoney(precio)}</p>
+                        <PreciosPropiedad propiedad={{ ofertas, operacion, moneda, precio }} />
                     </div>
                     <div className='cont-fav'>
                         <Favorito
@@ -94,6 +88,7 @@ function Card(
                             tituloPublicacion={tituloPublicacion}
                             ubicacion={ubicacion}
                             operacion={operacion}
+                            ofertas={ofertas}
                             moneda={moneda}
                             precio={precio}
                             imagenes={imagenes}

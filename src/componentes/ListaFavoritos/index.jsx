@@ -19,6 +19,7 @@ function ListaFavoritos({allProps}) {
                                         tituloPublicacion={p.tituloPublicacion}
                                         ubicacion={p.ubicacion}
                                         operacion={p.operacion}
+                                    ofertas={p.ofertas}
                                         moneda={p.moneda}
                                         precio={p.precio}
                                         imagenes={p.imagenes}

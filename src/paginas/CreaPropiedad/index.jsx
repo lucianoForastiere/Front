@@ -16,6 +16,7 @@ function CreaPropiedad() {
             tituloPublicacion: data.tituloPublicacion,
             tipoPropiedad: data.tipoPropiedad,
             operacion: data.operacion,
+            ofertas: data.ofertas,
             moneda: data.moneda,
             precio: data.precio,
             descripcion: data.descripcion,

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './estilos.css';
+import { obtenerOfertas, normalizarMoneda } from '../../Helps/ofertas';
 
 
 function FormularioProp({propiedad, handleOnSubmit, op}) {
     const propiedadActual = propiedad || {};
+    const nombreAlquiler = obtenerOfertas(propiedadActual).some(oferta => oferta.operacion === 'Alquiler temporario')
+        ? 'Alquiler temporario' : 'Alquiler';
     const MONEDA_VENTA_DEFAULT = 'U$D';
     const MONEDA_ALQUILER_DEFAULT = '$';
-    const normalizarMoneda = (valor) => valor === 'USD' ? MONEDA_VENTA_DEFAULT : valor;
 
     //tipo de propiedad
     const tipoProps = [
@@ -16,15 +18,28 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
     ];
     const [tituloPublicacion, setTituloPublicacion] = useState('');
     //estado objeto tipo opeeracion
-    const [operacion, setOperacion] = useState(null); 
+    const [operaciones, setOperaciones] = useState([]);
+    const operacion = operaciones.join(' y ');
     //estado moneda
     const [monedaVenta, setMonedaVenta] = useState('');
     const [monedaAlq, setMonedaAlq] = useState('');
-    const [moneda, setMoneda] = useState(''); 
     //estado precios
     const [precioVenta, setPrecioVenta] = useState(null); 
     const [precioAlq, setPrecioAlq] = useState(null);
-    const [precio, setPrecio] = useState(null); 
+    const ofertas = [
+        ...(operaciones.includes('Venta') ? [{ operacion: 'Venta', moneda: monedaVenta, precio: precioVenta }] : []),
+        ...(operaciones.includes(nombreAlquiler) ? [{ operacion: nombreAlquiler, moneda: monedaAlq, precio: precioAlq }] : []),
+    ];
+    const erroresOfertas = () => {
+        const errores = {};
+        if (!ofertas.length) errores.operacion = 'Seleccioná al menos una operación';
+        ofertas.forEach(oferta => {
+            const sufijo = oferta.operacion === 'Venta' ? 'Venta' : 'Alq';
+            if (!oferta.moneda) errores['moneda' + sufijo] = 'Seleccioná una moneda';
+            if (!Number.isFinite(oferta.precio) || oferta.precio <= 0) errores['precio' + sufijo] = 'Ingresá un valor mayor a cero';
+        });
+        return errores;
+    };
     //estados para ubicacion
     const [direccionPublicacion, setDireccionPublicacion] = useState('');
     const [direccionReal, setDireccionReal] = useState('');
@@ -72,21 +87,13 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
     const handleOnChangeTipoPropiedad = (e) => {
         setTipoPropiedad(e.target.value);
     };
-    const handleOnChangeOperacion = (e) => {
-        const nuevaOperacion = e.target.value;
-
-        setOperacion(nuevaOperacion);
-
-        if (nuevaOperacion === 'Venta') {
-            setMonedaVenta((monedaActual) => monedaActual || MONEDA_VENTA_DEFAULT);
-            setMonedaAlq('');
-            return;
-        }
-
-        if (nuevaOperacion === 'Alquiler') {
-            setMonedaAlq((monedaActual) => monedaActual || MONEDA_ALQUILER_DEFAULT);
-            setMonedaVenta('');
-        }
+    const handleOnChangeOperacion = (nuevaOperacion, activa) => {
+        setOperaciones(actuales => activa
+            ? ['Venta', nombreAlquiler].filter(opcion => opcion === nuevaOperacion || actuales.includes(opcion))
+            : actuales.filter(opcion => opcion !== nuevaOperacion));
+        if (activa && nuevaOperacion === 'Venta') setMonedaVenta(actual => actual || MONEDA_VENTA_DEFAULT);
+        if (activa && nuevaOperacion === nombreAlquiler) setMonedaAlq(actual => actual || MONEDA_ALQUILER_DEFAULT);
+        setErrors({});
     };
     const handleOnChangeMonedaVenta = (e) => {
         setMonedaVenta(e.target.value);
@@ -207,6 +214,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
         return tituloPublicacion 
         && tipoPropiedad
         && operacion
+        && Object.keys(erroresOfertas()).length === 0
         && descripcion;        
     };
     //valida vista 2
@@ -254,6 +262,8 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
             hasErrors = true;
         }
 
+        Object.assign(newErrors, erroresOfertas());
+        hasErrors = hasErrors || Object.keys(newErrors).length > 0;
         setErrors(newErrors);
 
         // Si hay errores, no avanzar
@@ -369,6 +379,15 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
     //igualmente a pesar de que recibo del padre la función onsubmit, la vuelvo a definir acá
     const OnSubmit = (e) => {
         e.preventDefault();
+        const erroresPrecio = erroresOfertas();
+        if (Object.keys(erroresPrecio).length) {
+            setErrors(erroresPrecio);
+            setVista1(true);
+            setVista2(false);
+            setVista3(false);
+            setVista4(false);
+            return;
+        }
         //valido
         if(!validaDatosVista1()){
             setErrors({...errors, tituloPublicacion: 'Campo requerido'});
@@ -386,8 +405,9 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
         const data = {
             tituloPublicacion,
             operacion: operacion,
-            moneda: moneda,
-            precio: precio,
+            ofertas,
+            moneda: ofertas[0]?.moneda,
+            precio: ofertas[0]?.precio,
             tipoPropiedad,
             descripcion,
             ubicacion: {
@@ -419,48 +439,19 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
     }
 
 
-    //ejecuto funcion para asignar moneda SI la prop está en Venta y Alq
-    useEffect(() => {
-        if(operacion === "Venta"){
-            setMoneda(monedaVenta || MONEDA_VENTA_DEFAULT);
-        }else if(operacion === "Alquiler"){
-            setMoneda(monedaAlq || MONEDA_ALQUILER_DEFAULT);
-        }else{
-            setMoneda('');
-        }
-    }, [monedaVenta, monedaAlq, operacion]);
-    //ejecuto funcion para asignar precio SI la prop está en Venta y Alq
-    useEffect(() => {
-        if(operacion === "Venta" && precioVenta){
-            setPrecio(precioVenta);
-            setPrecioAlq(null);
-        }else if(operacion === "Alquiler" && precioAlq){
-            setPrecio(precioAlq);
-            setPrecioVenta(null);
-        }else if(!operacion){
-            setPrecioVenta(null);
-            setPrecio(null);
-            setPrecioAlq(null);
-        }
-    }, [precioVenta, precioAlq, operacion]);
     //efecto para cargar los datos de la propiedad Si es editar
     useEffect(() => {
         if(propiedad?._id){
             setTituloPublicacion(propiedad.tituloPublicacion);
             setTipoPropiedad(propiedad.tipoPropiedad);
-            setOperacion(propiedad.operacion);
-            if(propiedad.operacion === "Venta"){                
-                //selecciono el radio btn
-                document.getElementById("operacionVenta").checked = true;
-                setMonedaVenta(normalizarMoneda(propiedad.moneda) || MONEDA_VENTA_DEFAULT);
-                setPrecioVenta(propiedad.precio);
-            }
-            if(propiedad.operacion === "Alquiler"){
-                //selecciono el radio btn
-                document.getElementById("operacionAlquiler").checked = true;
-                setMonedaAlq(normalizarMoneda(propiedad.moneda) || MONEDA_ALQUILER_DEFAULT);
-                setPrecioAlq(propiedad.precio);
-            }
+            const cargadas = obtenerOfertas(propiedad);
+            setOperaciones(cargadas.map(oferta => oferta.operacion));
+            const venta = cargadas.find(oferta => oferta.operacion === 'Venta');
+            const alquiler = cargadas.find(oferta => oferta.operacion === 'Alquiler' || oferta.operacion === 'Alquiler temporario');
+            setMonedaVenta(normalizarMoneda(venta?.moneda) || MONEDA_VENTA_DEFAULT);
+            setPrecioVenta(venta?.precio ?? null);
+            setMonedaAlq(normalizarMoneda(alquiler?.moneda) || MONEDA_ALQUILER_DEFAULT);
+            setPrecioAlq(alquiler?.precio ?? null);
             setDescripcion(propiedad.descripcion);
             setCantPisos(propiedad.cantPisos);
             setAmbientes(propiedad.ambientes);
@@ -571,97 +562,60 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                 <p style={{ 'margin':'0', 'color':'red', 'fontSize':'23px'}}>*</p>
                                 {errors.operacion && (<p style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>{errors.operacion}</p>)}
                             </div>
-                            <div className='cont-operaciones operacion'>
-                                {/* venta */}
-                                <div className='cont-opVenta-y-precio'>
-                                    <div className='cont-venta'>
-                                        <label className='label-venta'>Venta</label>
-                                        <input
-                                            type='radio'
-                                            id='operacionVenta'
-                                            value={"Venta"}
-                                            checked={operacion === 'Venta'}
-                                            onChange={(e) => { handleOnChangeOperacion(e) }}
-                                            className='input-check-venta'
-                                        />
-                                    </div>
-                                    {/* valor */}
-                                    <div className='cont-precio-venta'>
-                                        <label className='label-precio-venta'>Valor: </label>
-                                        <select 
-                                            id='monedaVenta' 
-                                            value={monedaVenta} 
-                                            onChange={(e) => { handleOnChangeMonedaVenta(e) }} 
-                                            className='input-moneda-venta' 
-                                            disabled={operacion !== "Venta"}
-                                        >
-                                            <option value='' disabled hidden></option>
-                                            <option value='U$D'>U$D</option>
-                                            <option value='$'>$</option>
-                                        </select>
-                                        <input 
-                                            type='number' 
-                                            id='precioVenta' 
-                                            value={precioVenta === null ? '' : precioVenta} 
-                                            onChange={(e) => { handleOnChangePrecioVenta(e) }} 
-                                            onBlur={handleOnBlur}
-                                            className='input-precio-venta' 
-                                            disabled={operacion !== "Venta"}
-                                        />
-                                        {
-                                            operacion === "Venta" && errors.precioVenta && (
-                                                <p style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>
-                                                    {errors.precioVenta}
-                                                </p>
-                                            )
-                                        }
-                                    </div>                                    
-                                </div>
-                                {/* Alq */}
-                                <div className='cont-opAlq-y-precio'>
-                                    <div className='cont-alquiler'>
-                                        <label className='label-alq'>Alquiler</label>
-                                        <input
-                                            type='radio'
-                                            id='operacionAlquiler'
-                                            value={"Alquiler"}
-                                            checked={operacion === 'Alquiler'}
-                                            onChange={(e) => { handleOnChangeOperacion(e) }}
-                                            className='input-check-venta'
-                                        />
-                                    </div>                                    
-                                    <div className='cont-precio-alq'>
-                                        <label className='label-precio-venta'>Valor: </label>
-                                        <select 
-                                            type='text' 
-                                            id='monedaAlq' 
-                                            value={monedaAlq === null ? '' : monedaAlq} 
-                                            onChange={(e) => { handleOnChangeMonedaAlq(e) }}                                             
-                                            className='input-moneda-alq' 
-                                            disabled={operacion !== 'Alquiler'}
-                                        >
-                                            <option value='' disabled hidden></option>
-                                            <option value='U$D'>U$D</option>
-                                            <option value='$'>$</option>
-                                        </select>
-                                        <input 
-                                            type='number' 
-                                            id='precioAlq' 
-                                            value={precioAlq === null ? '' : precioAlq}
-                                            onBlur={handleOnBlur} 
-                                            onChange={(e) => { handleOnChangePrecioAlq(e) }} 
-                                            className='input-precio-venta'
-                                            disabled={operacion !== 'Alquiler'}
-                                        />
-                                        {
-                                            operacion !== 'Alquiler' && errors.precioAlq && (
-                                                <p style={{ color: 'red', fontSize: '14px', marginTop: '5px' }}>
-                                                    {errors.precioAlq}
-                                                </p>
-                                            )
-                                        }
-                                    </div>
-                                </div>
+                            <p className='ayuda-operaciones'>Podés seleccionar una o ambas opciones. Cada operación tiene su moneda y valor.</p>
+                            <div className='cont-operaciones operacion operacion-con-precios'>
+                                {[
+                                    { nombre: 'Venta', sufijo: 'Venta', moneda: monedaVenta, precio: precioVenta, cambiarMoneda: handleOnChangeMonedaVenta, cambiarPrecio: handleOnChangePrecioVenta },
+                                    { nombre: nombreAlquiler, sufijo: 'Alq', moneda: monedaAlq, precio: precioAlq, cambiarMoneda: handleOnChangeMonedaAlq, cambiarPrecio: handleOnChangePrecioAlq },
+                                ].map(opcion => {
+                                    const activa = operaciones.includes(opcion.nombre);
+                                    return (
+                                        <div key={opcion.nombre} className={`tarjeta-operacion${activa ? ' seleccionada' : ''}`}>
+                                            <label className='selector-operacion'>
+                                                <input
+                                                    type='checkbox'
+                                                    checked={activa}
+                                                    onChange={e => handleOnChangeOperacion(opcion.nombre, e.target.checked)}
+                                                    aria-controls={`campos-${opcion.sufijo}`}
+                                                />
+                                                Publicar en {opcion.nombre.toLowerCase()}
+                                            </label>
+                                            {activa && (
+                                                <div id={`campos-${opcion.sufijo}`} className='cont-precio-venta'>
+                                                    <div className='campo-moneda'>
+                                                        <label htmlFor={`moneda${opcion.sufijo}`}>Moneda</label>
+                                                        <select
+                                                            id={`moneda${opcion.sufijo}`}
+                                                            aria-label={`Moneda de ${opcion.nombre.toLowerCase()}`}
+                                                            value={opcion.moneda}
+                                                            onChange={opcion.cambiarMoneda}
+                                                        >
+                                                            <option value='U$D'>U$D</option>
+                                                            <option value='$'>$</option>
+                                                        </select>
+                                                        {errors[`moneda${opcion.sufijo}`] && <span className='error-oferta'>{errors[`moneda${opcion.sufijo}`]}</span>}
+                                                    </div>
+                                                    <div className='campo-valor'>
+                                                        <label htmlFor={`precio${opcion.sufijo}`}>Valor</label>
+                                                        <input
+                                                            type='number'
+                                                            min='0.01'
+                                                            step='0.01'
+                                                            placeholder='Ingresá el valor'
+                                                            id={`precio${opcion.sufijo}`}
+                                                            aria-label={`Valor de ${opcion.nombre.toLowerCase()}`}
+                                                            value={opcion.precio ?? ''}
+                                                            onChange={opcion.cambiarPrecio}
+                                                            onBlur={handleOnBlur}
+                                                            className='input-precio-venta'
+                                                        />
+                                                        {errors[`precio${opcion.sufijo}`] && <span className='error-oferta'>{errors[`precio${opcion.sufijo}`]}</span>}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
                         {/* Descrip */}

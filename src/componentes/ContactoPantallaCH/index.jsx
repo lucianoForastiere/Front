@@ -1,4 +1,5 @@
 import React from 'react';
+import SEO from '../SEO';
 import './estilos.css';
 
 function ContactoPAntallaCH() {
@@ -14,6 +15,11 @@ function ContactoPAntallaCH() {
 
     return (
         <div className='cont-pantalla-chica'>
+            <SEO
+                title="Contacto"
+                description="Contacta a Forastieri Propiedades por consultas sobre venta, alquiler o tasacion de inmuebles en Olavarria."
+                path="/contacto"
+            />
             <h2 className='titulo-contactanos'>Contáctanos</h2>
             <p className='texto-contactanos'>Si tienes alguna consulta, no dudes en contactarnos.</p>
             <p className='texto-contactanos'>Estamos a tu disposición.</p>

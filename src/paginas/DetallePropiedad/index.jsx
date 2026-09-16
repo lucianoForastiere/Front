@@ -1,3 +1,5 @@
+import { obtenerOfertas } from '../../Helps/ofertas';
+import PreciosPropiedad from '../../componentes/PreciosPropiedad';
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,6 +9,7 @@ import { InmobiliariaContext } from '../../context';
 import Carrusel from '../../componentes/Carrusel';
 import MapProp from '../../componentes/MapaProp';
 import ModalVideo from '../../componentes/ModalVideo';
+import SEO, { siteUrl } from '../../componentes/SEO';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import OndemandVideoIcon from '@mui/icons-material/OndemandVideo';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -21,6 +24,40 @@ function DetalleProp(){
     const navigate = useNavigate();
     const dispatch = useDispatch();    
     const contexto = useContext(InmobiliariaContext); 
+    const ubicacionPublica = propiedad.ubicacion?.direccionPublicacion || propiedad.ubicacion?.ciudad || 'Olavarria';
+    const ofertas = obtenerOfertas(propiedad);
+    const precioTexto = ofertas.map(oferta => `${oferta.operacion}: ${oferta.moneda || ''} ${oferta.precio != null ? formatMoney(oferta.precio) : 'Consultar'}`).join(' / ');
+    const seoTitle = propiedad.tituloPublicacion
+        ? `${propiedad.tituloPublicacion} en ${propiedad.operacion || 'propiedad'}`
+        : 'Detalle de propiedad';
+    const seoDescription = propiedad.tituloPublicacion
+        ? `${propiedad.tipoPropiedad || 'Propiedad'} en ${propiedad.operacion || 'operacion'} ubicada en ${ubicacionPublica}${precioTexto ? `. Precio: ${precioTexto}` : ''}.`
+        : 'Detalle de propiedad disponible en Forastieri Propiedades.';
+    const imagenPrincipal = propiedad.imagenes?.[0]?.startsWith('http')
+        ? propiedad.imagenes[0]
+        : undefined;
+    const propertyJsonLd = propiedad._id ? {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: propiedad.tituloPublicacion,
+        description: propiedad.descripcion || seoDescription,
+        url: `${siteUrl}/detalle/${id}`,
+        image: propiedad.imagenes || [],
+        category: `${propiedad.tipoPropiedad || 'Propiedad'} en ${propiedad.operacion || 'operacion'}`,
+        brand: {
+            '@type': 'RealEstateAgent',
+            name: 'Forastieri Propiedades',
+            url: siteUrl,
+        },
+        offers: ofertas.filter(oferta => oferta.precio != null).map(oferta => ({
+            '@type': 'Offer',
+            name: oferta.operacion,
+            price: oferta.precio,
+            priceCurrency: ['USD', 'U$S', 'U$D'].includes(oferta.moneda) ? 'USD' : 'ARS',
+            availability: propiedad.estadoActual ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock',
+            url: `${siteUrl}/detalle/${id}`,
+        })),
+    } : undefined;
     //estado para el tooltipText
     const [showTooltipVideo, setShowTooltipVideo] = useState(false);
     //estado para el tooltipText
@@ -80,6 +117,14 @@ function DetalleProp(){
 
     return(
         <div className='contGralDetalle'>
+            <SEO
+                title={seoTitle}
+                description={seoDescription}
+                path={`/detalle/${id}`}
+                image={imagenPrincipal}
+                type="article"
+                jsonLd={propertyJsonLd}
+            />
             <div className='cont-detail'>
                 {/* Titulo prop y botones atrás y video*/}
                 <div className='info-1'>
@@ -131,7 +176,10 @@ function DetalleProp(){
                         {
                             propiedad?.imagenes?.length > 0
                                 ?
-                                <Carrusel imagenes={propiedad.imagenes} />
+                                <Carrusel
+                                    imagenes={propiedad.imagenes}
+                                    altBase={`${propiedad.tipoPropiedad || 'Propiedad'} en ${propiedad.operacion || 'operacion'} - ${ubicacionPublica}`}
+                                />
                                 :
                                 <p>No img</p>
                         }
@@ -149,7 +197,7 @@ function DetalleProp(){
                         </div>
                         <div className='cont-p-col-1'>
                             <p className='p-col-1'>Precio:</p>
-                            <p className='p-col-1'>{propiedad.moneda} {formatMoney(propiedad.precio)}</p>
+                            <PreciosPropiedad propiedad={propiedad} />
                         </div>
                         {
                             propiedad.tipoPropiedad !== 'Terreno' &&

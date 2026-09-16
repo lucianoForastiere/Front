@@ -6,7 +6,7 @@
     align-items: center;
     width: 100%;
     min-height: calc(100svh - 4.5rem);
-    background-image: url('../../imagenes/img-1.jpg');
+    background-image: url('../../imagenes/Fondo_portada.jpeg');
     background-size: cover;
     background-position: center;
     overflow: visible;

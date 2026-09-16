@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { formatMoney } from '../../Helps';
+import PreciosPropiedad from '../PreciosPropiedad';
 import EditIcon from '@mui/icons-material/Edit';
 import BotonEliminaProp from '../BotonEliminaProp';
 import './estilos.css';
@@ -34,7 +34,7 @@ function TablaProspAdmin({propiedades}) {
                                 </td>
                                 <td>{propiedad.ubicacion.direccionReal}</td>
                                 <td>{propiedad.operacion}</td>
-                                <td>{propiedad.moneda} {formatMoney(propiedad.precio)}</td>
+                                <td><PreciosPropiedad propiedad={propiedad} /></td>
                                 <td>
                                     <button className='boton-detalle-prop'>
                                         <NavLink to={`/detalle/${propiedad._id}`} className='link-detalle-prop'>

@@ -1,0 +1,30 @@
+.precios-operaciones {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 100%;
+}
+.precios-operaciones .precio-operacion {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 4px 12px;
+    font-size: 15px;
+}
+.precios-operaciones strong {
+    font-size: 18px;
+    overflow-wrap: anywhere;
+}
+.contCard .cont-precio-fav {
+    height: auto;
+    min-height: 40px;
+    padding: 8px 0;
+}
+.contCard .cont-precio {
+    margin: 0 12px;
+    color: #fff;
+}
+.contCard {
+    grid-template-rows: 50px 270px minmax(155px, auto) 100px;
+}
