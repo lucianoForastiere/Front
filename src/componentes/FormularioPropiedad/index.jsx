@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './estilos.css';
 import { obtenerOfertas, normalizarMoneda } from '../../Helps/ofertas';
 
@@ -62,8 +62,21 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
     const [expesnsas, setExpensas] = useState(null);
     const [cantCocheras, setCantCocheras] = useState(null);     
     //estado imgs
-    const [imagenes, setImagenes] = useState([]);  
     const [vistaPrevia, setVistaPrevia] = useState([]);//vista previa
+    const imagenes = vistaPrevia.map(img => img.file || img.url);
+    const urlsLocales = useRef(new Set());
+    const imagenArrastrada = useRef(null);
+    const [destinoImagen, setDestinoImagen] = useState(null);
+    const galeriaRef = useRef(null);
+    const toqueEnCurso = useRef(false);
+    const [arrastreTactil, setArrastreTactil] = useState(null);
+    useEffect(() => {
+        const urls = urlsLocales.current;
+        return () => {
+            urls.forEach(url => URL.revokeObjectURL(url));
+            urls.clear();
+        };
+    }, []);
     //estado video
     const [video, setVideos] = useState([]);  
     const [vistaPreviaVideo, setVistaPreviaVideo] = useState([]);//vista previa
@@ -175,15 +188,13 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
         setProvincia(e.target.value);
     };
     const handleOnChangeImgs = (e) => {
-        const filesArray = Array.from(e.target.files); //convierto e.target.files en un array
-        setImagenes(filesArray);
-        const files = Array.from(e.target.files);
-        //para la vista previa
-        const previews = files.map((file) => ({
-            file,
-            url: URL.createObjectURL(file),
-        }));
-        setVistaPrevia(previews);
+        const previews = Array.from(e.target.files || []).map(file => {
+            const url = URL.createObjectURL(file);
+            urlsLocales.current.add(url);
+            return { file, url };
+        });
+        setVistaPrevia(actuales => [...actuales, ...previews]);
+        e.target.value = '';
     };
     const handleOnChangeVideos = (e) => {
         setVideos(e.target.files[0]);
@@ -364,17 +375,90 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
     };    
     //elimina img de vista previa
     const handleOnClickEliminaImg = (index) => {
-        setImagenes((prevImgs) => {
-            const imgs = [...prevImgs];
-            imgs.splice(index, 1);
-            return imgs;
-        });
-        setVistaPrevia((prevPreviews) => {
-            const previews = [...prevPreviews];
-            previews.splice(index, 1);
-            return previews;
+        const img = vistaPrevia[index];
+        if (img.file) {
+            URL.revokeObjectURL(img.url);
+            urlsLocales.current.delete(img.url);
+        }
+        setVistaPrevia(actuales => actuales.filter((_, posicion) => posicion !== index));
+    };
+    const moverImagen = (origen, destino) => {
+        setVistaPrevia(actuales => {
+            if (!Number.isInteger(origen) || origen < 0 || origen >= actuales.length || destino < 0 || destino >= actuales.length) return actuales;
+            const ordenadas = [...actuales];
+            const [imagen] = ordenadas.splice(origen, 1);
+            ordenadas.splice(destino, 0, imagen);
+            return ordenadas;
         });
     };
+
+    useEffect(() => {
+        const galeria = galeriaRef.current;
+        let gesto = null;
+        let temporizador;
+        const cancelar = () => {
+            clearTimeout(temporizador);
+            gesto = null;
+            toqueEnCurso.current = false;
+            setArrastreTactil(null);
+            setDestinoImagen(null);
+        };
+        const iniciar = e => {
+            cancelar();
+            if (e.touches.length !== 1 || e.target.closest('button, input, label')) return;
+            const tarjeta = e.target.closest('[data-imagen-index]');
+            if (!tarjeta) return;
+            const dedo = e.touches[0];
+            toqueEnCurso.current = true;
+            gesto = { origen: Number(tarjeta.dataset.imagenIndex), x: dedo.clientX, y: dedo.clientY, activo: false, destino: null };
+            temporizador = setTimeout(() => {
+                if (!gesto) return;
+                gesto.activo = true;
+                setArrastreTactil({ url: vistaPrevia[gesto.origen].url, x: gesto.x, y: gesto.y });
+            }, 350);
+        };
+        const mover = e => {
+            if (!gesto) return;
+            if (e.touches.length !== 1) { cancelar(); return; }
+            const dedo = e.touches[0];
+            if (!gesto.activo) {
+                // Un deslizamiento antes de mantener pulsado sigue desplazando la página.
+                if (Math.hypot(dedo.clientX - gesto.x, dedo.clientY - gesto.y) > 10) cancelar();
+                return;
+            }
+            e.preventDefault();
+            setArrastreTactil({ url: vistaPrevia[gesto.origen].url, x: dedo.clientX, y: dedo.clientY });
+            const tarjeta = document.elementFromPoint(dedo.clientX, dedo.clientY)?.closest('[data-imagen-index]');
+            gesto.destino = tarjeta && galeria.contains(tarjeta) ? Number(tarjeta.dataset.imagenIndex) : null;
+            setDestinoImagen(gesto.destino);
+            if (dedo.clientY < 70) window.scrollBy(0, -16);
+            else if (dedo.clientY > window.innerHeight - 70) window.scrollBy(0, 16);
+        };
+        const terminar = () => {
+            if (gesto?.activo && gesto.destino !== null) {
+                const { origen, destino } = gesto;
+                setVistaPrevia(actuales => {
+                    const ordenadas = [...actuales];
+                    const [imagen] = ordenadas.splice(origen, 1);
+                    ordenadas.splice(destino, 0, imagen);
+                    return ordenadas;
+                });
+            }
+            cancelar();
+        };
+        galeria.addEventListener('touchstart', iniciar, { passive: true });
+        // El listener nativo no pasivo permite detener el scroll sólo durante el arrastre.
+        galeria.addEventListener('touchmove', mover, { passive: false });
+        galeria.addEventListener('touchend', terminar);
+        galeria.addEventListener('touchcancel', cancelar);
+        return () => {
+            clearTimeout(temporizador);
+            galeria.removeEventListener('touchstart', iniciar);
+            galeria.removeEventListener('touchmove', mover);
+            galeria.removeEventListener('touchend', terminar);
+            galeria.removeEventListener('touchcancel', cancelar);
+        };
+    }, [vistaPrevia]);
     
     //igualmente a pesar de que recibo del padre la función onsubmit, la vuelvo a definir acá
     const OnSubmit = (e) => {
@@ -400,6 +484,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
         } */
         if(!validaDatosVista4()){
             alert('Debe cargar al menos una imagen');
+            return;
         }
         // Construcción del objeto data
         const data = {
@@ -472,8 +557,9 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
             setCiudad(propiedad.ubicacion?.ciudad);
             setProvincia(propiedad.ubicacion?.provincia);
             //imgs
-            setImagenes(propiedad.imagenes);
-            setVistaPrevia(propiedad.imagenes?.map((img) => ({ url: img })));
+            urlsLocales.current.forEach(url => URL.revokeObjectURL(url));
+            urlsLocales.current.clear();
+            setVistaPrevia((propiedad.imagenes || []).map((img) => ({ url: img })));
             //video
             setVideos(propiedad.video);
             setVistaPreviaVideo(propiedad.video);
@@ -506,7 +592,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                             <input 
                                 type='text' 
                                 id='tituloPublicacion' 
-                                value={tituloPublicacion} 
+                                value={tituloPublicacion ?? ''}
                                 onChange={(e) => { handleOnChangeTituloPublicacion(e) }} 
                                 onBlur={handleOnBlur} 
                                 className="input-tituloPublicacion" 
@@ -631,7 +717,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                             </div>
                             <textarea 
                                 id='descripcion' 
-                                value={descripcion} 
+                                value={descripcion ?? ''}
                                 onBlur={handleOnBlur}
                                 onChange={(e) => { handleOnChangeDescripcion(e) }}  
                                 rows="8" 
@@ -669,7 +755,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                 <input 
                                     type='text' 
                                     id='direccionPublicacion' 
-                                    value={direccionPublicacion}
+                                    value={direccionPublicacion ?? ''}
                                     onBlur={handleOnBlur} 
                                     onChange={(e) => { handleOnChangeDireccionPublicacion(e) }}
                                     placeholder='Lavalle 2500'
@@ -689,7 +775,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                 <input 
                                     type='text' 
                                     id='direccionReal' 
-                                    value={direccionReal} 
+                                    value={direccionReal ?? ''}
                                     onBlur={handleOnBlur}
                                     onChange={(e) => { handleOnChangeDireccionReal(e) }}
                                     placeholder='Lavalle 2570'
@@ -712,7 +798,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                 <input 
                                     type='text' 
                                     id='barrio' 
-                                    value={barrio}
+                                    value={barrio ?? ''}
                                     onBlur={handleOnBlur} 
                                     onChange={(e) => { handleOnChangeBarrio(e) }}
                                     placeholder='Centro'
@@ -732,7 +818,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                 <input 
                                     type='text' 
                                     id='ciudad' 
-                                    value={ciudad} 
+                                    value={ciudad ?? ''}
                                     onBlur={handleOnBlur}
                                     onChange={(e) => { handleOnChangeCiudad(e) }} 
                                     placeholder='Mar del Plata'
@@ -751,7 +837,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                             <input
                                 type='text'
                                 id='provincia'
-                                value={provincia}
+                                value={provincia ?? ''}
                                 onBlur={handleOnBlur}
                                 onChange={(e) => { handleOnChangeProvincia(e) }}
                                 placeholder='Buenos Aires'
@@ -804,7 +890,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                     <input
                                         type='number'
                                         id='ambientes'
-                                        value={ambientes === null ? '' : ambientes}
+                                        value={ambientes ?? ''}
                                         //onBlur={handleOnBlur}
                                         onChange={(e) => { handleOnChangeAmbientes(e) }}
                                         className='input-amb'
@@ -824,7 +910,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                     <input
                                         type='number'
                                         id='dormitorios'
-                                        value={dormitorios}
+                                        value={dormitorios ?? ''}
                                         //onBlur={handleOnBlur} 
                                         onChange={(e) => { handleOnChangeDormitorios(e) }}
                                         className='input-amb'
@@ -844,7 +930,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                     <input
                                         type='number'
                                         id='baños'
-                                        value={baños}
+                                        value={baños ?? ''}
                                         //onBlur={handleOnBlur} 
                                         onChange={(e) => { handleOnChangeBaños(e) }}
                                         className='input-amb'
@@ -860,7 +946,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                     <input
                                         type='number'
                                         id='cantPisos'
-                                        value={cantPisos}
+                                        value={cantPisos ?? ''}
                                         onChange={(e) => { handleOnChangeCantPisos(e) }}
                                         className='input-amb'
                                     />
@@ -877,7 +963,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                 <input 
                                     type='number' 
                                     id='supCubierta' 
-                                    value={supCubierta} 
+                                    value={supCubierta ?? ''}
                                     //onBlur={handleOnBlur}
                                     onChange={(e) => { handleOnChangeSupCubierta(e) }} 
                                     className='input-tituloPublicacion' 
@@ -895,7 +981,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                 <input 
                                     type='number' 
                                     id='supSemiCub' 
-                                    value={supSemiCub} 
+                                    value={supSemiCub ?? ''}
                                     onChange={(e) => { handleOnChangeSupSemiCub(e) }} 
                                     className='input-tituloPublicacion' 
                                 />
@@ -907,7 +993,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                 <input 
                                     type='number' 
                                     id='supDescubierta' 
-                                    value={supDescubierta} 
+                                    value={supDescubierta ?? ''}
                                     onChange={(e) => { handleOnChangeSupDescubierta(e) }} 
                                     className='input-tituloPublicacion' 
                                 />
@@ -920,7 +1006,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                 <input 
                                     type='number' 
                                     id='supTotal' 
-                                    value={supTotal}
+                                    value={supTotal ?? ''}
                                     //onBlur={handleOnBlur} 
                                     onChange={(e) => { handleOnChangeSupTotal(e) }} 
                                     className='input-tituloPublicacion' 
@@ -941,7 +1027,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                     <input
                                         type='text'
                                         id='estado'
-                                        value={estado}
+                                        value={estado ?? ''}
                                         onChange={(e) => { handleOnChangeEstado(e) }}
                                         className='input-tituloPublicacion'
                                     />
@@ -951,7 +1037,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                     <input
                                         type='number'
                                         id='antiguedad'
-                                        value={antiguedad}
+                                        value={antiguedad ?? ''}
                                         onChange={(e) => { handleOnChangeAntiguedad(e) }}
                                         className='input-tituloPublicacion'
                                     />
@@ -960,7 +1046,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                     tipoPropiedad === "Departamento" && (
                                         <div className='cont-amb'>
                                             <label className='label-crea-prop'>Expensas</label>
-                                            <input type='number' id='expensas' value={expesnsas} onChange={(e) => { handleOnChangeExpensas(e) }} className='input-tituloPublicacion' />
+                                            <input type='number' id='expensas' value={expesnsas ?? ''} onChange={(e) => { handleOnChangeExpensas(e) }} className='input-tituloPublicacion' />
                                         </div>
                                     )
                                 }
@@ -971,7 +1057,7 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                     <input
                                         type='number'
                                         id='cantCocheras'
-                                        value={cantCocheras}
+                                        value={cantCocheras ?? ''}
                                         onChange={(e) => { handleOnChangeCantCocheras(e) }}
                                         className='input-tituloPublicacion'
                                     />
@@ -1055,27 +1141,67 @@ function FormularioProp({propiedad, handleOnSubmit, op}) {
                                 <label className='label-crea-prop'>Imágenes</label>
                                 <p style={{ 'margin': '0', 'color': 'red', 'fontSize': '23px' }}>*</p>
                             </div>
-                            <input type="file" accept="image/*" multiple onChange={(e)=> {handleOnChangeImgs(e)}}/>
+                            <input type="file" aria-label="Agregar imágenes" accept="image/*" multiple onChange={handleOnChangeImgs}/>
+                            <p className="ayuda-imagenes">Podés agregar varias fotos en distintas tandas. Arrastralas para ordenarlas; en el celular, mantené el dedo sobre una foto y movela. Marcá Portada para elegir la foto principal, que irá primero.</p>
                         </div>
                         {/* muestra ims miniatura */}
-                        <div className="image-preview">
+                        <div className="image-preview galeria-ordenable" ref={galeriaRef}>
                             {
                                 vistaPrevia?.map((img, index) => (
-                                    <div key={index} className='cont-img-miniatura'>
-                                        <img src={img.url} alt={`preview-${index}`} className='img-miniatura'/>
+                                    <div key={img.url} className={`cont-img-miniatura tarjeta-imagen ${destinoImagen === index ? 'destino-imagen' : ''}`}
+                                        data-imagen-index={index}
+                                        tabIndex={0}
+                                        aria-label={`Foto ${index + 1}. Usá las flechas del teclado para moverla.`}
+                                        onKeyDown={e => {
+                                            if (e.target !== e.currentTarget) return;
+                                            if (['ArrowLeft', 'ArrowUp', 'ArrowRight', 'ArrowDown'].includes(e.key)) {
+                                                e.preventDefault();
+                                                moverImagen(index, index + (['ArrowLeft', 'ArrowUp'].includes(e.key) ? -1 : 1));
+                                            }
+                                        }}
+                                        onContextMenu={e => e.preventDefault()}
+                                        draggable
+                                        onDragStart={e => {
+                                            if (toqueEnCurso.current) { e.preventDefault(); return; }
+                                            imagenArrastrada.current = index;
+                                            e.dataTransfer.effectAllowed = 'move';
+                                            e.dataTransfer.setData('text/plain', String(index));
+                                        }}
+                                        onDragOver={e => {
+                                            if (imagenArrastrada.current === null) return;
+                                            e.preventDefault();
+                                            e.dataTransfer.dropEffect = 'move';
+                                            setDestinoImagen(index);
+                                        }}
+                                        onDrop={e => {
+                                            e.preventDefault();
+                                            moverImagen(imagenArrastrada.current, index);
+                                            imagenArrastrada.current = null;
+                                            setDestinoImagen(null);
+                                        }}
+                                        onDragEnd={() => { imagenArrastrada.current = null; setDestinoImagen(null); }}
+                                    >
+                                        <span className="posicion-imagen">{index === 0 ? '1 · Portada' : `Foto ${index + 1}`}</span>
+                                        <img src={img.url} alt={`Foto ${index + 1}`} draggable={false} className='img-miniatura'/>
                                         <button 
                                             type='button'
                                             className='btn-elimina-img'
+                                            aria-label={`Eliminar foto ${index + 1}`}
                                             onClick={()=>{handleOnClickEliminaImg(index)}}
                                         >
                                             X
                                         </button>
+                                        <label className="selector-portada">
+                                            <input type="checkbox" aria-label={`Portada: foto ${index + 1}`} checked={index === 0} onChange={() => moverImagen(index, 0)} />
+                                            Portada
+                                        </label>
                                     </div>
                                 ))
                             }
                         </div>
 
                         {/* carga video */}
+                        {arrastreTactil && <img className="imagen-en-arrastre" src={arrastreTactil.url} alt="" aria-hidden="true" style={{ left: arrastreTactil.x, top: arrastreTactil.y }} />}
                         <div className="video-cloudinary">
                             <label className='label-crea-prop'>Video</label>
                             <input type="file" accept="video/*" onChange={(e)=>{handleOnChangeVideos(e)}} />

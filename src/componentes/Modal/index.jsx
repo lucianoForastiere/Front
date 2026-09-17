@@ -2,7 +2,7 @@ import React from 'react'
 import CarruselModal from '../CarruselModal';
 import './styles.css';
 
-function Modal({imagenes}) {
+function Modal({imagenes, initialIndex = 0}) {
 
     return (
         <div className='contModal'>
@@ -10,7 +10,7 @@ function Modal({imagenes}) {
 
             {/* carrusel de imgs */}
             <div className='cont-carrusel-modal'>
-                <CarruselModal imagenes={imagenes} />
+                <CarruselModal imagenes={imagenes} initialIndex={initialIndex} />
             </div>
         </div>
     )

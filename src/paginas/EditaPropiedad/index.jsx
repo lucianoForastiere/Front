@@ -17,6 +17,10 @@ function EditaPropiedad() {
     const handleOnSubmit = async (data) => {
 
         const formData = new FormData();
+        let archivo = 0;
+        const ordenImagenes = data.imagenes.map(imagen => typeof imagen === 'string'
+            ? { url: imagen }
+            : { archivo: archivo++ });
         formData.append('data', JSON.stringify({
             tituloPublicacion: data.tituloPublicacion,
             tipoPropiedad: data.tipoPropiedad,
@@ -39,13 +43,14 @@ function EditaPropiedad() {
             cantCocheras: data.cantCocheras,
             expesnsas: data.expesnsas,
             imagenes: data.imagenes,
+            ordenImagenes,
             video: data.video,
             servicios: data.servicios,
             estadoActual: data.estadoActual
         }));
 
-        data.imagenes?.forEach((imagen, index) => {
-            formData.append('imagenes', imagen);
+        data.imagenes?.forEach(imagen => {
+            if (imagen instanceof File) formData.append('imagenes', imagen);
         });
 
         try {

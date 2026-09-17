@@ -1,6 +1,6 @@
 import { obtenerOfertas } from '../../Helps/ofertas';
 import PreciosPropiedad from '../../componentes/PreciosPropiedad';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {  getPropiedad, resetProperty } from '../../redux/actions';
@@ -58,211 +58,86 @@ function DetalleProp(){
             url: `${siteUrl}/detalle/${id}`,
         })),
     } : undefined;
-    //estado para el tooltipText
-    const [showTooltipVideo, setShowTooltipVideo] = useState(false);
-    //estado para el tooltipText
-    const [showTooltipVolver, setShowTooltipVolver] = useState(false);
-    const tooltipTextVideo = "Ver video propiedad";
-    const tooltipTextVolver = "Volver atrás";
+    const direccion = [propiedad.ubicacion?.direccionPublicacion, propiedad.ubicacion?.ciudad, propiedad.ubicacion?.provincia].filter(Boolean).join(', ');
+    const direccionMapa = [propiedad.ubicacion?.direccionReal, propiedad.ubicacion?.ciudad, propiedad.ubicacion?.provincia].filter(Boolean).join(', ');
+    const superficie = valor => valor != null ? `${valor} m²` : 'Consultar';
+    const caracteristicas = [
+        ['Superficie total', superficie(propiedad.supTotal)],
+        ...(propiedad.tipoPropiedad !== 'Terreno' ? [
+            ['Superficie cubierta', superficie(propiedad.supCubierta)],
+            ['Ambientes', propiedad.ambientes ?? 'Consultar'],
+            ['Dormitorios', propiedad.dormitorios ?? 'Consultar'],
+            ['Baños', propiedad.baños ?? 'Consultar'],
+            ['Cocheras', propiedad.cantCocheras ?? 'Consultar'],
+        ] : []),
+    ];
 
-    // Función para reemplazar puntos por saltos de línea
-    function formatearDescripcion(texto) {
-        if (!texto || typeof texto !== 'string') return '';
-
-        const partes = texto.split(/(?<=[.:])\s*/);
-        const resultado = [];
-        let enLista = false;
-
-        for (let parte of partes) {
-            const linea = parte.trim();
-            if (!linea) continue;
-
-            if (linea.endsWith(':')) {
-                resultado.push(`<p>${linea}</p>`);
-                enLista = true;
-            } else if (enLista) {
-                resultado.push(`<p class="p-viñeta">🔹 ${linea}</p>`);
-            } else {
-                resultado.push(`<p>${linea}</p>`);
-            }
-        }
-
-        return resultado.join('');
-    }
-
-    const handleMouseEnter = () => {
-        setShowTooltipVideo(true);
-    };
-    const handleMouseLeave = () => {
-        setShowTooltipVideo(false);
-    };
-    const handleMouseEnterVolver = () => {
-        setShowTooltipVolver(true);
-    };
-    const handleMouseLeaveVolver = () => {
-        setShowTooltipVolver(false);
-    };
-    const handleClickAtras = (e) => {
-        navigate(-1);
-    };
-
-    useEffect(() => { 
+    useEffect(() => {
         dispatch(getPropiedad(id));
-        // Desplazarse hacia la parte superior de la página al cargar el componente
         window.scrollTo(0, 0);
-
-        return () => { dispatch(resetProperty()); }
+        return () => { dispatch(resetProperty()); };
     }, [dispatch, id]);
 
-
-    return(
-        <div className='contGralDetalle'>
-            <SEO
-                title={seoTitle}
-                description={seoDescription}
-                path={`/detalle/${id}`}
-                image={imagenPrincipal}
-                type="article"
-                jsonLd={propertyJsonLd}
-            />
+    return (
+        <main className='contGralDetalle'>
+            <SEO title={seoTitle} description={seoDescription} path={`/detalle/${id}`} image={imagenPrincipal} type='article' jsonLd={propertyJsonLd} />
             <div className='cont-detail'>
-                {/* Titulo prop y botones atrás y video*/}
-                <div className='info-1'>
-                    <div className='cont-titulo-detalle'>
-                        <span className='detalle-titulo-prop'>{propiedad.tituloPublicacion}</span>
-                        {/* dirección */}
-                        <div className='cont-titulo-icono-direcc'>
-                            <LocationOnIcon sx={{'marginLeft':'10px'}}/>
-                            <p className='detalle-titulo-direccion'>
-                                {propiedad.ubicacion?.direccionPublicacion}
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div className='cont-btns-direccion'>
-                            {/* btn-atrás */}
-                            <button
-                                onClick={() => handleClickAtras()}
-                                className='btn-volver'
-                                onMouseEnter={handleMouseEnterVolver}
-                                onMouseLeave={handleMouseLeaveVolver}
-                            >
-                                <ArrowBackIcon />
-                            </button>
-                            {/* msj toolTip */}
-                            {
-                                showTooltipVolver && <div className="tooltipVolver">{tooltipTextVolver}</div>
-                            }
-                            
-                            {/* btn-video */}
-                            <button
-                                onClick={() => contexto.handleIsOpen()}
-                                className='btn-video'
-                                onMouseEnter={handleMouseEnter}
-                                onMouseLeave={handleMouseLeave}
-                            >
-                                <OndemandVideoIcon className='icono-video' />
-                            </button>
-                            {/* msj toolTip */}
-                            {
-                                showTooltipVideo && <div className="tooltip">{tooltipTextVideo}</div>
-                            }
-                    </div>
-                </div>
+                <nav className='detalle-toolbar' aria-label='Acciones de la propiedad'>
+                    <button type='button' onClick={() => navigate(-1)} className='detalle-accion'><ArrowBackIcon fontSize='small' /> Volver</button>
+                    {propiedad.codigoReferencia != null && <span className='detalle-referencia'>Referencia {propiedad.codigoReferencia}</span>}
+                </nav>
 
-                {/* carrusel y detalle prop */}
-                <div className='cont-imgs-info'>
-                    <div className='cont-imagenes'>
-                        {
-                            propiedad?.imagenes?.length > 0
-                                ?
-                                <Carrusel
-                                    imagenes={propiedad.imagenes}
-                                    altBase={`${propiedad.tipoPropiedad || 'Propiedad'} en ${propiedad.operacion || 'operacion'} - ${ubicacionPublica}`}
-                                />
-                                :
-                                <p>No img</p>
-                        }
+                <header className='detalle-cabecera'>
+                    <div className='detalle-etiquetas'>
+                        {propiedad.tipoPropiedad && <span>{propiedad.tipoPropiedad}</span>}
+                        {ofertas.map(oferta => <span key={oferta.operacion}>{oferta.operacion}</span>)}
+                        {propiedad.estadoActual && <span className='detalle-estado'>{propiedad.estadoActual}</span>}
                     </div>
+                    <h1 className='detalle-titulo-prop'>{propiedad.tituloPublicacion || 'Detalle de la propiedad'}</h1>
+                    {direccion && <p className='detalle-direccion'><LocationOnIcon fontSize='small' />{direccion}</p>}
+                </header>
 
-                    <div className='cont-detalle'>
-                        <p className='titulo-detalle-prop'>Detalle Propiedad</p>
-                        <div className='cont-p-col-1'>
-                            <p className='p-col-1'>Tipo Operacio:</p>
-                            <p className='p-col-1'>{ propiedad.operacion }</p>
-                        </div>
-                        <div className='cont-p-col-1'>
-                            <p className='p-col-1'>Tipo de Prop:</p>
-                            <p className='p-col-1'>{propiedad.tipoPropiedad}</p>
-                        </div>
-                        <div className='cont-p-col-1'>
-                            <p className='p-col-1'>Precio:</p>
+                <div className='detalle-principal'>
+                    <div className='detalle-galeria-encabezado'>
+                            <h2>Conocé la propiedad</h2>
+                            {propiedad.video && typeof propiedad.video === 'string' && <button type='button' className='detalle-accion' onClick={() => contexto.handleIsOpen()}><OndemandVideoIcon fontSize='small' /> Ver video</button>}
+                    </div>
+                    <section className='detalle-galeria' aria-label='Fotografías de la propiedad'>
+                        {propiedad.imagenes?.length > 0
+                            ? <Carrusel key={id} imagenes={propiedad.imagenes} altBase={`${propiedad.tipoPropiedad || 'Propiedad'} en ${propiedad.operacion || 'operación'} - ${ubicacionPublica}`} />
+                            : <div className='detalle-sin-imagen'>Fotografías no disponibles</div>}
+                    </section>
+
+                    <aside className='detalle-ficha' aria-label='Precio y características'>
+                        <div className='detalle-precios'>
+                            <p className='detalle-sobretitulo'>Precio de la propiedad</p>
                             <PreciosPropiedad propiedad={propiedad} />
                         </div>
-                        {
-                            propiedad.tipoPropiedad !== 'Terreno' &&
-                            <div className='cont-p-col-1'>
-                            <p className='p-col-1'>Sup. Cubierta:</p>
-                            <p className='p-col-1'>{propiedad.supCubierta}m2</p>
+                        <div className='detalle-caracteristicas'>
+                            <h2>Características</h2>
+                            <dl>{caracteristicas.map(([nombre, valor]) => <div key={nombre}><dt>{nombre}</dt><dd>{valor}</dd></div>)}</dl>
                         </div>
-                        }
-                        <div className='cont-p-col-1'>
-                            <p className='p-col-1'>Sup. Total:</p>
-                            <p className='p-col-1'>{propiedad.supTotal}m2</p>
-                        </div>
-                        {
-                            propiedad.tipoPropiedad !== 'Terreno' &&
-                            <>
-                                <div className='cont-p-col-1'>
-                                    <p className='p-col-1'>Dormitorios:</p>
-                                    <p className='p-col-1'>{propiedad.dormitorios}</p>
-                                </div>
-                                <div className='cont-p-col-1'>
-                                    <p className='p-col-1'>Ambientes:</p>
-                                    <p className='p-col-1'>{propiedad.ambientes}</p>
-                                </div>
-                                <div className='cont-p-col-1'>
-                                    <p className='p-col-1'>Baños:</p>
-                                    <p className='p-col-1'>{propiedad.baños}</p>
-                                </div>
-                                <div className='cont-p-col-1 ultimo'>
-                                    <p className='p-col-1'>Cochera:</p>
-                                    <p className='p-col-1'>{propiedad.cantCocheras}</p>
-                                </div>
-                            </>
-                        }
+                    </aside>
+                </div>
+
+                <section className='detalle-descripcion' aria-labelledby='titulo-descripcion'>
+                    <p className='detalle-sobretitulo'>Sobre esta propiedad</p>
+                    <h2 id='titulo-descripcion'>Descripción</h2>
+                    <div className='detalle-texto'>{propiedad.descripcion || 'Consultanos para conocer más sobre esta propiedad.'}</div>
+                </section>
+
+                {direccionMapa && <section className='detalle-ubicacion' aria-labelledby='titulo-ubicacion'>
+                    <div className='detalle-ubicacion-encabezado'>
+                        <div><p className='detalle-sobretitulo'>El entorno</p><h2 id='titulo-ubicacion'>Ubicación</h2></div>
+                        <p className='detalle-direccion'><LocationOnIcon fontSize='small' />{direccion}</p>
                     </div>
-                </div>
-
-                {/* descrip prop */}
-                <div className='cont-titulo-descripcion-form'>
-                    <div className='cont-descrip'>
-                        <p className='titulo-descrip-prop'>Descripción Propiedad</p>
-                        <div
-                            className="subCont-texto-descrip-detalle"
-                            dangerouslySetInnerHTML={{ __html: formatearDescripcion(propiedad.descripcion) }}
-                        />
-                    </div>
-                </div>
-                
-                {/* google map */}
-                <div className='cont-map'>
-                    <p className='p-titulo-mapa'>Ubicacion Propiedad</p>
-                    <MapProp 
-                        address={propiedad.ubicacion?.direccionReal + ' ' + propiedad.ubicacion?.ciudad + ', ' + propiedad.ubicacion?.provincia}
-                    />
-                </div>
-
-                {/* Modal Video */}                
-                {
-                    contexto.isOpenModalVideo && <ModalVideo video={propiedad.video}/>
-                }
-
-                {/* btn whatsapp */}
+                    <MapProp address={direccionMapa} />
+                </section>}
+                {contexto.isOpenModalVideo && <ModalVideo video={propiedad.video} />}
                 <BotonWhatsApp />
             </div>
-        </div>
-    )
+        </main>
+    );
 }
 
 export default DetalleProp;

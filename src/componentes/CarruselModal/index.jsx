@@ -5,10 +5,10 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import './styles.css';
 
-function CarruselModal({imagenes}) {
+function CarruselModal({imagenes, initialIndex = 0}) {
 
 
-    const [indexImgActual, setIndexImgActual] = useState(0);
+    const [indexImgActual, setIndexImgActual] = useState(initialIndex);
     const dispatch = useDispatch();
 
     const handleOnclickClose = () =>{
@@ -32,7 +32,7 @@ function CarruselModal({imagenes}) {
         <div className='contGralCarruselM'>
             <div className='cont-img-btns'>
                 {/* btn atrás */}
-                <button className='btn-carrusel-prev' onClick={() => handleClickPrev()}>
+                <button type='button' aria-label='Foto anterior ampliada' disabled={indexImgActual === 0} className='btn-carrusel-prev' onClick={() => handleClickPrev()}>
                     <ArrowBackIosNewIcon />
                 </button>
 
@@ -41,16 +41,18 @@ function CarruselModal({imagenes}) {
                     <div className='cont-btn-cierra-modal'>
                         <button
                             className='btn-close-modal'
+                            type='button'
+                            aria-label='Cerrar fotografía'
                             onClick={() => handleOnclickClose()}
                         >
                             <b>X</b>
                         </button>
                     </div>
-                    <img src={imagenes[indexImgActual]} alt='' className='img-carruselM' />
+                    <img src={imagenes[indexImgActual]} alt={`Fotografía ampliada ${indexImgActual + 1}`} className='img-carruselM' />
                 </div>
 
                 {/* btn prox */}
-                <button className='btn-carrusel-next' onClick={() => handleClickNext()}>
+                <button type='button' aria-label='Foto siguiente ampliada' disabled={indexImgActual === imagenes.length - 1} className='btn-carrusel-next' onClick={() => handleClickNext()}>
                     <ArrowForwardIosIcon />
                 </button>
             </div>

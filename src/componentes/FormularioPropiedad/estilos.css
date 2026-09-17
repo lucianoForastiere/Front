@@ -412,6 +412,32 @@
     border-radius: 50%;
     cursor: pointer;
 }
+.ayuda-imagenes { color: #46515d; font-size: 14px; line-height: 1.5; }
+.galeria-ordenable { justify-content: flex-start; gap: 12px; }
+.galeria-ordenable .tarjeta-imagen {
+    width: 144px;
+    max-width: 100%;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 2px solid #d5dbe1;
+    border-radius: 8px;
+    background: #fff;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+.galeria-ordenable .destino-imagen { border-color: #526779; background: #eef3f7; }
+.tarjeta-imagen .img-miniatura { width: 100%; height: 100px; object-fit: cover; margin: 0; border-radius: 4px; }
+.posicion-imagen { align-self: flex-start; font-size: 14px; font-weight: 600; color: #263440; }
+.selector-portada { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; font-size: 14px; }
+.selector-portada input { width: 20px; height: 20px; accent-color: #526779; }
+.imagen-en-arrastre { position: fixed; z-index: 10000; pointer-events: none; width: 110px; height: 90px; object-fit: cover; transform: translate(-50%, -65%); border: 3px solid #526779; border-radius: 8px; opacity: .85; box-shadow: 0 8px 20px #0004; }
+.tarjeta-imagen:focus-visible { outline: 2px solid #526779; outline-offset: 2px; }
+.tarjeta-imagen .btn-elimina-img { top: 34px; right: 10px; width: 32px; height: 32px; color: #fff; background: #9e2929; }
+.tarjeta-imagen button:focus-visible { outline: 2px solid #526779; outline-offset: 2px; }
 .cont-botones-crea-prop {
     width: 100%;
     display: flex;

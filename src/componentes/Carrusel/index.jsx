@@ -46,7 +46,7 @@ function Carrusel({imagenes, altBase = 'Propiedad publicada por Forastieri Propi
         <div className='contGralCarrusel'>
             <div className='cont-img-btns'>
                 {/* btn atrás */}
-                <button className='btn-carrusel-prev' onClick={() => handleClickPrev()}>
+                <button type='button' aria-label='Foto anterior' disabled={indexImgActual === 0} className='btn-carrusel-prev' onClick={() => handleClickPrev()}>
                     <ArrowBackIosNewIcon />
                 </button>
 
@@ -58,13 +58,20 @@ function Carrusel({imagenes, altBase = 'Propiedad publicada por Forastieri Propi
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
                     className='img-carrusel'
+                    role='button'
+                    tabIndex={0}
+                    aria-label={`Ampliar foto ${indexImgActual + 1}`}
+                    onKeyDown={e => {
+                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleOpenModal(); }
+                    }}
                 />
                 {/* msj toolTip "Agranda imagen"*/}
                 {
                     showTooltip && <div className="tooltipImg">{tooltipTextImg}</div>
                 }
                 {/* btn prox */}
-                <button className='btn-carrusel-next' onClick={() => handleClickNext()}>
+                <span className='galeria-contador' aria-live='polite'>{indexImgActual + 1} / {imagenes.length}</span>
+                <button type='button' aria-label='Foto siguiente' disabled={indexImgActual === imagenes.length - 1} className='btn-carrusel-next' onClick={() => handleClickNext()}>
                     <ArrowForwardIosIcon />
                 </button>
             </div>
@@ -82,7 +89,7 @@ function Carrusel({imagenes, altBase = 'Propiedad publicada por Forastieri Propi
             {
                 isOpen && (
                     <div className='modal-overlay'>
-                        <Modal imagenes={imagenes}/>
+                        <Modal imagenes={imagenes} initialIndex={indexImgActual}/>
                     </div>
                 )
             }
