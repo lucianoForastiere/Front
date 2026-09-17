@@ -16,6 +16,20 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import BotonWhatsApp from '../../componentes/BotonWhastApp';
 import './estilos.css';
 
+function formatearDescripcion(texto) {
+    if (!texto || typeof texto !== 'string') return 'Consultanos para conocer más sobre esta propiedad.';
+    let enLista = false;
+    return texto.split(/(?<=[.:])\s*|\n+/).map(parte => parte.trim()).filter(Boolean).map((linea, index) => {
+        if (linea.endsWith(':')) {
+            enLista = true;
+            return <p key={index}>{linea}</p>;
+        }
+        const tieneViñeta = /^(?:[•🔹▪●]|-\s)/u.test(linea);
+        return <p key={index} className={enLista || tieneViñeta ? 'detalle-vineta' : undefined}>
+            {tieneViñeta ? linea.replace(/^(?:[•🔹▪●]|-\s)\s*/u, '') : linea}
+        </p>;
+    });
+}
 
 function DetalleProp(){
 
@@ -123,7 +137,7 @@ function DetalleProp(){
                 <section className='detalle-descripcion' aria-labelledby='titulo-descripcion'>
                     <p className='detalle-sobretitulo'>Sobre esta propiedad</p>
                     <h2 id='titulo-descripcion'>Descripción</h2>
-                    <div className='detalle-texto'>{propiedad.descripcion || 'Consultanos para conocer más sobre esta propiedad.'}</div>
+                    <div className='detalle-texto'>{formatearDescripcion(propiedad.descripcion)}</div>
                 </section>
 
                 {direccionMapa && <section className='detalle-ubicacion' aria-labelledby='titulo-ubicacion'>
